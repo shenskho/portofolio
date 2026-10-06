@@ -1,0 +1,214 @@
+.layout {
+  display: grid;
+  gap: clamp(28px, 4vw, 56px);
+  margin-block-start: clamp(36px, 6vw, 72px);
+}
+@media (min-width: 1000px) {
+  .layout {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: stretch;
+  }
+}
+
+/* ── physics box ── */
+.box {
+  position: relative;
+  height: clamp(520px, 52vw, 560px);
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  background:
+    radial-gradient(520px circle at var(--sx, 50%) var(--sy, 0%), rgba(200, 255, 61, 0.07), transparent 60%),
+    repeating-linear-gradient(0deg, transparent 0 39px, var(--line) 39px 40px),
+    var(--bg-1);
+  touch-action: pan-y;
+}
+.pills {
+  position: absolute;
+  inset: 0;
+  direction: ltr;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-end;
+  gap: 8px;
+  padding: 16px;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 44px;
+  padding-inline: 18px;
+  border: 1px solid color-mix(in srgb, var(--k, var(--fg-2)) 55%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--k, var(--fg-2)) 9%, var(--bg-2));
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  will-change: transform;
+}
+.box[data-mode='physics'] .pills {
+  display: block;
+}
+.box[data-mode='physics'] .pill {
+  position: absolute;
+  top: 0;
+  left: 0; /* physical on purpose: the physics engine works in left-to-right pixels, also on RTL pages */
+  cursor: grab;
+  touch-action: pan-y;
+  transform: translate3d(-9999px, 0, 0);
+}
+.box[data-mode='physics'] .pill[data-drag] {
+  cursor: grabbing;
+  z-index: 2;
+  box-shadow: 0 0 0 1px var(--k), 0 18px 40px rgba(0, 0, 0, 0.5);
+}
+.pill[data-kind='core'],
+.legend [data-kind='core'] {
+  --k: var(--lime);
+}
+.pill[data-kind='tools'],
+.legend [data-kind='tools'] {
+  --k: var(--sky);
+}
+.pill[data-kind='learning'],
+.legend [data-kind='learning'] {
+  --k: var(--flame);
+}
+.pill[data-kind='practice'],
+.legend [data-kind='practice'] {
+  --k: var(--amber);
+}
+.pillDot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--k, var(--fg-2));
+}
+
+.boxHint,
+.shake {
+  display: none; /* only meaningful once the physics engine has taken over */
+}
+.box[data-mode='physics'] .boxHint,
+.box[data-mode='physics'] .shake {
+  display: block;
+}
+.boxHint {
+  position: absolute;
+  inset-block-start: 14px;
+  inset-inline-start: 16px;
+  pointer-events: none;
+  color: var(--fg-2);
+}
+.shake {
+  position: absolute;
+  inset-block-start: 10px;
+  inset-inline-end: 12px;
+  z-index: 3;
+  height: 34px;
+  padding-inline: 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: rgba(7, 7, 10, 0.7);
+  font-size: 0.78rem;
+  transition: border-color 0.3s, color 0.3s, transform 0.3s var(--ease-spring);
+}
+.shake:hover {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+.shake:active {
+  transform: scale(0.94) rotate(-3deg);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin-block-start: 16px;
+  font-size: 0.82rem;
+  color: var(--fg-1);
+}
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── proficiency sheet ── */
+.sheet {
+  position: relative;
+  padding: clamp(20px, 3vw, 32px);
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(420px circle at var(--sx, 50%) var(--sy, -20%), rgba(200, 255, 61, 0.08), transparent 62%),
+    var(--bg-1);
+}
+.sheetTitle {
+  color: var(--lime);
+  font-weight: 500;
+  margin-block-end: 18px;
+}
+.group + .group {
+  margin-block-start: 30px;
+}
+.groupName {
+  margin-block-end: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--fg);
+}
+.skill {
+  padding-block: 12px;
+  border-block-start: 1px solid var(--line);
+}
+.skillHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-block-end: 9px;
+  font-size: 0.95rem;
+}
+.learning {
+  margin-inline-start: 10px;
+  padding: 2px 8px;
+  border: 1px solid rgba(255, 90, 44, 0.5);
+  border-radius: 999px;
+  font-family: var(--font-code);
+  font-size: 0.64rem;
+  font-style: normal;
+  color: var(--flame);
+}
+.pct {
+  font-family: var(--font-code);
+  font-size: 0.78rem;
+  color: var(--fg-2);
+}
+.meter {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+  height: 10px;
+}
+.seg {
+  background: var(--bg-3);
+  transform-origin: bottom;
+}
+.seg[data-on] {
+  background: var(--lime);
+}
+.meter[data-learning] .seg[data-on] {
+  background: var(--flame);
+}
+:global(html.js) .meter:not([data-in]) .seg {
+  transform: scaleY(0.25);
+  opacity: 0.4;
+}
+.meter .seg {
+  transition: transform 0.5s var(--ease), opacity 0.5s;
+  transition-delay: calc(var(--k) * 55ms);
+}

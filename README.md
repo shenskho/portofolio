@@ -1,18 +1,65 @@
-# React + Vite
+# سایت شخصی امیرحسین غلام‌پور
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+وب‌سایت رزومه و خدمات؛ ساخته‌شده با **Next.js 16 (App Router) + TypeScript**، دوزبانه (فارسی پیش‌فرض در `/` و انگلیسی در `/en/`)، با خروجی **کاملاً استاتیک** که روی هر هاستی بالا می‌آید.
 
-Currently, two official plugins are available:
+## شروع سریع
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev            # http://localhost:3000
+```
 
-## React Compiler
+برای بیلد نهایی **حتماً دامنهٔ واقعی** را بدهید (canonical، sitemap، hreflang و داده‌ساختاریافته به آن نیاز دارند؛ بدون آن بیلد عمداً خطا می‌دهد):
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+```bash
+cp .env.example .env.local     # NEXT_PUBLIC_SITE_URL را ویرایش کنید
+npm run build                  # خروجی در پوشهٔ out/
+npm run audit:seo              # بررسی خودکار سئو روی خروجی
+npm start                      # پیش‌نمایش out/ روی http://localhost:3000
+```
 
-Note: This will impact Vite dev & build performances.
+### انتشار
+محتوای پوشهٔ `out/` را روی هاست بارگذاری کنید (cPanel، Nginx، Netlify، Cloudflare Pages، Vercel و …). فایل‌های `public/.htaccess` (Apache/cPanel) و `public/_headers` (Netlify/Cloudflare) کش، فشرده‌سازی و هدرهای امنیتی را تنظیم می‌کنند. بعد از انتشار، راهنمای [docs/SEO-CHECKLIST.md](docs/SEO-CHECKLIST.md) را برای ثبت در Search Console دنبال کنید.
 
-## Expanding the ESLint configuration
+## عکس بدون پس‌زمینه (بخش «درباره من»)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **راه دائمی:** عکس PNG/WebP شفاف خودتان را با نام `portrait.webp` (یا `portrait.png`) در `public/images/` بگذارید و دوباره بیلد کنید. بخش «درباره من» خودکار از حالت آپلود به نمایش هولوگرافیک عکس (اسکن، نورافکن رنگی با موس، گلیچ با کلیک، تگ‌های در حال چرخش) تبدیل می‌شود و عکس در داده‌ساختاریافته (JSON-LD) هم ثبت می‌شود.
+- **پیش از آن:** در همان بخش یک کادر آپلود هست. عکس را بکشید و رها کنید، کلیک کنید یا `Ctrl+V` بزنید تا پیش‌نمایش زنده ببینید. دکمهٔ «دانلود نسخهٔ بهینه» فایل WebP سبک‌شده را می‌دهد تا در `public/images/` بگذارید.
+- پیشنهاد: ارتفاع حدود ۱۴۰۰–۱۶۰۰ پیکسل، نسبت ۴:۵، کادر از کمر به بالا.
+
+## ویرایش محتوا
+
+همهٔ متن‌ها در `src/data/` هستند (بدون دست‌زدن به کامپوننت‌ها):
+
+| فایل | محتوا |
+|---|---|
+| `src/data/fa.ts` / `src/data/en.ts` | صفحهٔ اصلی: درباره من، مهارت‌ها (و درصدها)، پروژه‌ها، سوابق، سؤالات متداول، تماس |
+| `src/data/services-fa.ts` / `services-en.ts` | چهار صفحهٔ خدمات (طراحی سایت، برنامه‌نویسی وب، React و Next.js، سئو فنی) |
+| `src/lib/site.ts` | ایمیل، تلفن، لینک‌های GitHub/LinkedIn، تاریخ آخرین بروزرسانی محتوا (`CONTENT_UPDATED`) |
+
+بعد از تغییر متن مهم، `CONTENT_UPDATED` را به تاریخ روز تغییر دهید (در sitemap و JSON-LD استفاده می‌شود).
+
+پس از تغییر عنوان صفحه‌ها یا آیکون: `npm i -D playwright && npx playwright install chromium && npm run assets` تصاویر اشتراک‌گذاری (`public/og`) و آیکون‌ها را دوباره می‌سازد.
+
+## ساختار
+
+```
+src/app/(fa)/…        مسیرهای فارسی (/ و /services/…)
+src/app/en/…          مسیرهای انگلیسی (/en/ و /en/services/…)
+src/app/sitemap.ts, robots.ts, manifest.ts, llms*.txt
+src/components/fx     کرسر سفارشی، میدان تعاملی هیرو، افکت‌های سراسری، HUD
+src/components/game   بازی «شکار باگ»
+src/components/sections  بخش‌های صفحه (Portrait = ویترین عکس، SkillPlayground = فیزیک تگ‌ها)
+src/lib/seo.ts, jsonld.tsx, llms.ts   متادیتا، داده‌ساختاریافته، متن مخصوص هوش مصنوعی
+```
+
+## تعامل‌ها
+
+- **میدان براده‌آهن در هیرو:** با موس می‌چرخد، با نگه‌داشتن کلیک می‌چرخاند، با کلیک موج می‌فرستد.
+- **جعبهٔ مهارت‌ها:** تگ‌ها اجسام فیزیکی‌اند؛ بکشید، پرتاب کنید یا جعبه را تکان بدهید.
+- **بازی (دکمهٔ «بازی» در منو):** باگ‌ها را شکار کنید؛ از موس فرار می‌کنند. ۱۲ امتیاز = حالت هایپردرایو.
+- **کد مخفی:** ↑ ↑ ↓ ↓ ← → ← → B A
+- همهٔ افکت‌ها با `prefers-reduced-motion` خاموش می‌شوند و سایت بدون جاوااسکریپت هم کامل خوانده می‌شود.
+
+## تنظیمات سئو
+`.env.local` را ببینید: `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` (متای تأیید Search Console)، و در صورت نیاز Bing/Yandex.

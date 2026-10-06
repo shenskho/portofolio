@@ -1,0 +1,385 @@
+import type { Content } from './types'
+import { codeSamples } from './shared'
+
+const faDigits = new Intl.NumberFormat('fa-IR', { useGrouping: false })
+const year = new Date().getFullYear()
+
+export const fa: Content = {
+  meta: {
+    title: 'برنامه‌نویس وب و طراحی سایت با React و Next.js | امیرحسین غلام‌پور',
+    description:
+      'امیرحسین غلام‌پور، برنامه‌نویس وب و طراح سایت در تهران. طراحی وب‌سایت سریع و ریسپانسیو با React و Next.js؛ سابقه در سامانه‌های ملی و دولتی.',
+  },
+  site: {
+    name: 'امیرحسین غلام‌پور',
+    altName: 'AmirHossein GholamPour',
+    jobTitle: 'برنامه‌نویس وب و طراح سایت',
+    tagline: 'سایت‌هایی که سریع‌اند، خوب دیده می‌شوند و کار می‌کنند.',
+    availability: 'آمادهٔ همکاری و پروژه‌های جدید',
+    location: 'مرزداران، تهران، ایران',
+    city: 'تهران',
+    resumeUrl: '/resume-fa.pdf',
+    phone: '۰۹۳۸ ۶۳۸ ۶۴۰۷',
+  },
+  nav: [
+    { label: 'درباره من', href: '#about' },
+    { label: 'خدمات', href: '#services' },
+    { label: 'مهارت‌ها', href: '#skills' },
+    { label: 'پروژه‌ها', href: '#projects' },
+    { label: 'سوابق', href: '#experience' },
+    { label: 'سؤالات', href: '#faq' },
+    { label: 'تماس', href: '#contact' },
+  ],
+  ui: {
+    skipToContent: 'رفتن به محتوای اصلی',
+    primaryNavigation: 'منوی اصلی',
+    resume: 'رزومه',
+    openMenu: 'باز کردن منو',
+    closeMenu: 'بستن منو',
+    switchLanguage: 'English',
+    switchLanguageLabel: 'نسخهٔ انگلیسی سایت',
+    languageShort: 'EN',
+    play: 'بازی',
+    stopPlay: 'خروج از بازی',
+    email: 'ایمیل',
+    phone: 'موبایل',
+    location: 'محل',
+    status: 'وضعیت',
+    featured: 'برگزیده',
+    codeSamples: 'نمونه‌کدها',
+    viewRepository: 'مشاهده مخزن',
+    scrollDown: 'اسکرول کنید',
+    learning: 'در حال یادگیری',
+    copyEmail: 'کپی ایمیل',
+    copied: 'کپی شد',
+    backToTop: 'بازگشت به بالا',
+    readMore: 'جزئیات بیشتر',
+    allServices: 'همهٔ خدمات',
+    breadcrumbHome: 'خانه',
+    home: 'صفحهٔ اصلی',
+    notFoundTitle: 'این صفحه پیدا نشد',
+    notFoundText: 'آدرسی که وارد کرده‌اید وجود ندارد یا جابه‌جا شده است.',
+    notFoundCta: 'بازگشت به صفحهٔ اصلی',
+  },
+  hero: {
+    eyebrow: 'تهران',
+    lines: ['برنامه‌نویس وب', 'و طراح سایت'],
+    markedLine: 1,
+    stack: 'با React، Next.js و TypeScript',
+    lead: 'من امیرحسین غلام‌پور هستم، برنامه‌نویس وب در تهران. سایت و اپلیکیشن‌های وبِ سریع، ریسپانسیو و قابل‌پیداشدن در گوگل می‌سازم؛ با بیش از ۲٫۵ سال تجربه، از سامانه‌های ملی استخدامی تا خدمات دیجیتال دولتی.',
+    rolesLabel: 'نقش‌های من',
+    roles: [
+      'توسعه‌دهنده فرانت‌اند',
+      'برنامه‌نویس React',
+      'طراح رابط کاربری',
+      'متخصص Redux',
+      'پیاده‌ساز سئو فنی',
+    ],
+    ctaPrimary: { label: 'مشاهده پروژه‌ها', href: '#projects' },
+    ctaSecondary: { label: 'درخواست همکاری', href: '#contact' },
+    stats: [
+      { value: 2.5, decimals: 1, suffix: '+', label: 'سال تجربه' },
+      { value: 3, decimals: 0, suffix: '', label: 'پروژهٔ اصلی' },
+      { value: 2, decimals: 0, suffix: '', label: 'سابقهٔ سازمانی' },
+    ],
+  },
+  about: {
+    kicker: 'درباره من',
+    title: 'درباره امیرحسین، برنامه‌نویس وب',
+    paragraphs: [
+      'من برنامه‌نویس وب و طراح سایت هستم و در تهران زندگی می‌کنم. از آذر ۱۴۰۲ به‌صورت حرفه‌ای روی رابط کاربری اپلیکیشن‌های React کار می‌کنم؛ از چیدن ساختار صفحه تا اتصال به API و تحویل نسخهٔ نهایی.',
+      'در توسعهٔ اپلیکیشن‌های تک‌صفحه‌ای واکنش‌گرا، معماری ماژولار React، مدیریت قابل‌پیش‌بینی وضعیت و اتصال مطمئن به REST API تجربه دارم. بخشی از مسیر حرفه‌ای من به سامانه‌های ملی استخدامی و سکوی نماد اعتماد الکترونیکی اختصاص داشته است.',
+      'آدمی چالش‌پذیر و منعطف هستم و اولویتم گسترش ارتباط با افراد متخصص و باسواد است تا با اشتراک دانش، در کار تیمی کنار هم رشد کنیم. همین سایت هم با Next.js و TypeScript ساخته شده تا نمونه‌ای زنده از کارم باشد.',
+    ],
+    highlights: [
+      { icon: 'landmark', title: 'سامانه‌های دولتی', desc: 'سامانه‌های ملی آزمون و خدمات اعتماد دیجیتال' },
+      { icon: 'blocks', title: 'معماری ماژولار', desc: 'کامپوننت‌های بازاستفاده‌پذیر با اصول Clean Code' },
+      { icon: 'refresh', title: 'مدیریت وضعیت', desc: 'Redux، Redux-Thunk، Provider و جریان‌های غیرهمگام' },
+      { icon: 'plug', title: 'اتصال به API', desc: 'پیاده‌سازی REST API با Axios و Fetch' },
+    ],
+    factsTitle: 'کارت مشخصات',
+    facts: [
+      { label: 'نام', value: 'امیرحسین غلام‌پور' },
+      { label: 'نقش', value: 'برنامه‌نویس وب (فرانت‌اند)' },
+      { label: 'محل', value: 'تهران، ایران' },
+      { label: 'تجربه', value: 'بیش از ۲٫۵ سال' },
+      { label: 'مهارت اصلی', value: 'React، Redux، JavaScript' },
+      { label: 'در حال یادگیری', value: 'Next.js، TypeScript' },
+      { label: 'زبان', value: 'فارسی، انگلیسی (متوسط)' },
+      { label: 'وضعیت', value: 'آمادهٔ همکاری' },
+    ],
+    portrait: {
+      alt: 'امیرحسین غلام‌پور، برنامه‌نویس وب و طراح سایت',
+      dropTitle: 'عکس بدون پس‌زمینهٔ خودت را اینجا بینداز',
+      dropHint: 'PNG یا WebP با پس‌زمینهٔ شفاف · کلیک کن، بکش‌ و رها کن، یا Ctrl+V',
+      dropDragging: 'رها کن!',
+      dropError: 'فقط فایل تصویر (ترجیحاً PNG/WebP شفاف)',
+      previewNote: 'پیش‌نمایش فقط در همین مرورگر ذخیره شده است. برای دائمی‌شدن، فایل بهینه را دانلود کن و در public/images با نام portrait.webp بگذار.',
+      download: 'دانلود نسخهٔ بهینه',
+      reset: 'حذف پیش‌نمایش',
+      scanLabel: 'اسکن',
+      orbit: ['React', 'Next.js', 'TypeScript', 'Redux'],
+      backWord: 'AMIR',
+    },
+  },
+  services: {
+    kicker: 'خدمات',
+    title: 'خدمات طراحی سایت و برنامه‌نویسی وب',
+    intro:
+      'از ایدهٔ اولیه تا سایتی که در گوگل دیده می‌شود. هر خدمت صفحهٔ جداگانه‌ای دارد که جزئیات، روند کار و پرسش‌های رایج را توضیح می‌دهد.',
+    cta: 'مشاهده جزئیات',
+    items: [
+      {
+        slug: 'web-design',
+        title: 'طراحی سایت',
+        description:
+          'طراحی رابط و پیاده‌سازی سایت‌های معرفی، شرکتی و لندینگ‌پیج؛ ریسپانسیو، سریع و آمادهٔ سئو.',
+        tags: ['ریسپانسیو', 'UI', 'لندینگ‌پیج'],
+      },
+      {
+        slug: 'web-development',
+        title: 'برنامه‌نویسی وب',
+        description:
+          'ساخت اپلیکیشن‌ها و پنل‌های تحت وب با React، مدیریت وضعیت با Redux و اتصال پایدار به API.',
+        tags: ['React', 'Redux', 'REST API'],
+      },
+      {
+        slug: 'react-nextjs',
+        title: 'توسعه با React و Next.js',
+        description:
+          'سایت‌های رندر‌شده سمت سرور و استاتیک با App Router و TypeScript؛ مناسب سرعت بالا و سئو.',
+        tags: ['Next.js', 'TypeScript', 'SSR / SSG'],
+      },
+      {
+        slug: 'seo-performance',
+        title: 'سئو فنی و بهینه‌سازی سرعت',
+        description:
+          'متا، داده‌ساختاریافته، نقشهٔ سایت، Core Web Vitals و دسترس‌پذیری؛ پایه‌ای که گوگل برای فهم سایت شما لازم دارد.',
+        tags: ['Core Web Vitals', 'Schema', 'Search Console'],
+      },
+    ],
+  },
+  skills: {
+    kicker: 'مهارت‌ها',
+    title: 'مهارت‌ها و ابزارهای برنامه‌نویسی وب',
+    intro:
+      'این جعبه زنده است. تگ‌ها را بکشید، پرتاب کنید یا کل جعبه را تکان بدهید. رنگ هر تگ نشان می‌دهد در کدام دسته است.',
+    playHint: 'بکش و پرتاب کن',
+    shake: 'جعبه را تکان بده',
+    sheetTitle: 'میزان تسلط',
+    legend: {
+      core: 'مهارت اصلی',
+      tools: 'ابزار',
+      learning: 'در حال یادگیری',
+      practice: 'روش کار',
+    },
+    groups: [
+      {
+        name: 'فرانت‌اند اصلی',
+        skills: [
+          { name: 'React', level: 95 },
+          { name: 'JavaScript (ES6+)', level: 90 },
+          { name: 'HTML5 و CSS3', level: 92 },
+          { name: 'Redux / Redux-Thunk', level: 88 },
+        ],
+      },
+      {
+        name: 'ابزار و مسیر رشد',
+        skills: [
+          { name: 'REST API / Axios', level: 90 },
+          { name: 'Git و GitHub', level: 88 },
+          { name: 'Next.js', level: 60, learning: true },
+          { name: 'TypeScript', level: 55, learning: true },
+        ],
+      },
+    ],
+    pills: [
+      { name: 'React', kind: 'core' },
+      { name: 'JavaScript', kind: 'core' },
+      { name: 'Redux', kind: 'core' },
+      { name: 'Redux-Thunk', kind: 'core' },
+      { name: 'HTML5', kind: 'core' },
+      { name: 'CSS3', kind: 'core' },
+      { name: 'React Hook', kind: 'core' },
+      { name: 'Next.js', kind: 'learning' },
+      { name: 'TypeScript', kind: 'learning' },
+      { name: 'App Router', kind: 'learning' },
+      { name: 'REST API', kind: 'tools' },
+      { name: 'Axios / Fetch', kind: 'tools' },
+      { name: 'Git', kind: 'tools' },
+      { name: 'Reactstrap', kind: 'tools' },
+      { name: 'Provider', kind: 'practice' },
+      { name: 'State Management', kind: 'practice' },
+      { name: 'Modular Design', kind: 'practice' },
+      { name: 'Clean Code', kind: 'practice' },
+      { name: 'Responsive Design', kind: 'practice' },
+    ],
+  },
+  projects: {
+    kicker: 'پروژه‌ها',
+    title: 'پروژه‌های منتخب',
+    subtitle: 'بخشی از تجربه‌های حرفه‌ای من',
+    items: [
+      {
+        id: 1,
+        year: '۱۴۰۴',
+        title: 'سامانه آزمون استخدامی دستگاه‌های اجرایی کشور',
+        description:
+          'سامانه‌ای در مقیاس ملی برای مدیریت ثبت‌نام و فرایندهای آزمون استخدامی؛ توسعه‌یافته با کامپوننت‌های بازاستفاده‌پذیر React، مدیریت وضعیت Redux و اتصال به REST API.',
+        tags: ['React', 'Redux', 'REST API', 'Redux-Thunk'],
+        featured: true,
+        cover: 'graph',
+      },
+      {
+        id: 2,
+        year: '۱۴۰۴',
+        title: 'سامانه مدیریت آزمون استخدامی بانک مرکزی',
+        description:
+          'سامانهٔ مدیریت آزمون استخدامی بانک مرکزی با معماری ماژولار فرانت‌اند و تمرکز بر نگهداشت‌پذیری، بازاستفاده از کامپوننت‌ها و اصول Clean Code.',
+        tags: ['React', 'Modular Design', 'Redux', 'Clean Code'],
+        featured: true,
+        cover: 'ledger',
+      },
+      {
+        id: 3,
+        year: '۱۴۰۲',
+        title: 'سامانه اینماد — نماد اعتماد الکترونیکی',
+        description:
+          'توسعهٔ رابط کاربری سکوی ملی اعتماد تجارت الکترونیکی با طراحی واکنش‌گرا و اتصال پایدار به سرویس‌های دولتی REST.',
+        tags: ['React', 'REST API', 'Responsive Design', 'JavaScript'],
+        featured: false,
+        cover: 'shield',
+      },
+    ],
+    samplesTitle: 'نمونه‌کد در GitHub',
+    samples: codeSamples.map((url, i) => ({
+      label: `نمونه‌کد ${faDigits.format(i + 1).padStart(2, '۰')}`,
+      url,
+    })),
+  },
+  experience: {
+    kicker: 'سوابق',
+    title: 'سوابق کاری',
+    subtitle: 'مسیر حرفه‌ای من',
+    items: [
+      {
+        role: 'برنامه‌نویس React',
+        company: 'شرکت تعاونی پژوهشگران رایانگان فردیس',
+        location: 'کرج، ایران',
+        period: 'اردیبهشت ۱۴۰۴ — اکنون',
+        description:
+          'توسعه و نگهداشت اپلیکیشن‌های تک‌صفحه‌ای با React، Redux و Redux-Thunk؛ مشارکت در سامانه‌های آزمون استخدامی دستگاه‌های اجرایی و بانک مرکزی، ساخت ماژول‌های بازاستفاده‌پذیر و اتصال REST API با جریان دادهٔ غیرهمگام.',
+        tags: ['React', 'Redux', 'Redux-Thunk', 'REST API'],
+      },
+      {
+        role: 'کارشناس توسعه نرم‌افزار — برنامه‌نویس فرانت‌اند',
+        company: 'مرکز گسترش فناوری اطلاعات ایران (مگفا)',
+        location: 'تهران، ایران',
+        period: 'آذر ۱۴۰۲ — بهمن ۱۴۰۳',
+        description:
+          'توسعهٔ رابط‌های واکنش‌گرای خدمات دیجیتال دولتی، از جمله سامانه نماد اعتماد الکترونیکی، با React و JavaScript در چارچوب همکاری تیمی Agile.',
+        tags: ['React', 'JavaScript', 'Responsive Design', 'Agile'],
+      },
+    ],
+  },
+  education: {
+    kicker: 'تحصیلات',
+    title: 'تحصیلات و آموزش',
+    subtitle: 'پیشینه و مسیر یادگیری',
+    items: [
+      {
+        type: 'تحصیلات دانشگاهی',
+        title: 'کارشناسی حسابداری',
+        institution: 'دانشگاه آزاد اسلامی واحد شهریار',
+        period: '۱۳۹۴ — ۱۳۹۷',
+        description: 'دورهٔ کارشناسی حسابداری در دانشگاه آزاد اسلامی واحد شهریار.',
+      },
+      {
+        type: 'دورهٔ تخصصی',
+        title: 'بوت‌کمپ توسعه فرانت‌اند',
+        institution: 'استارکوچ',
+        period: '۱۴۰۳ · دورهٔ ۲ ماهه',
+        description: 'آموزش متمرکز توسعه وب مدرن و پیاده‌سازی رابط‌های کاربری کامپوننت‌محور.',
+      },
+      {
+        type: 'زبان خارجی',
+        title: 'زبان انگلیسی',
+        institution: 'سطح متوسط',
+        period: 'در حال پیشرفت',
+        description: 'توانایی استفاده از مستندات فنی، ابزارهای توسعه و ارتباطات کاری.',
+      },
+    ],
+  },
+  faq: {
+    kicker: 'پرسش‌های رایج',
+    title: 'پرسش‌های رایج دربارهٔ طراحی سایت و برنامه‌نویسی وب',
+    items: [
+      {
+        q: 'چه خدماتی ارائه می‌دهید؟',
+        a: 'طراحی و توسعهٔ وب‌سایت (معرفی، شرکتی، لندینگ‌پیج)، ساخت اپلیکیشن‌ها و پنل‌های وب با React و Next.js، اتصال به API و پیاده‌سازی فنی سئو و بهینه‌سازی سرعت. تمرکز من روی فرانت‌اند و تجربهٔ کاربری است.',
+      },
+      {
+        q: 'طراحی یک سایت چقدر زمان می‌برد؟',
+        a: 'بسته به دامنهٔ کار؛ معمولاً یک صفحهٔ معرفی یا لندینگ چند روز تا دو هفته و یک سایت چندصفحه‌ای چند هفته زمان می‌برد. بعد از بررسی نیازها، زمان‌بندی دقیق را اعلام می‌کنم.',
+      },
+      {
+        q: 'هزینهٔ طراحی سایت چقدر است؟',
+        a: 'هزینه به تعداد صفحه‌ها، پیچیدگی طراحی، امکانات و آماده‌بودن محتوا بستگی دارد. بعد از گفت‌وگو دربارهٔ نیاز شما، برآورد شفاف ارائه می‌دهم. برای شروع از طریق ایمیل یا تلفن پیام بدهید.',
+      },
+      {
+        q: 'چرا سایت را با Next.js می‌سازید؟',
+        a: 'Next.js صفحات را از قبل، به‌صورت استاتیک یا سمت سرور، تولید می‌کند. نتیجه این است که سایت سریع‌تر باز می‌شود و موتورهای جست‌وجو محتوا را کامل می‌بینند؛ انتخابی مناسب برای سایت‌هایی که دیده‌شدن در گوگل برایشان مهم است.',
+      },
+      {
+        q: 'آیا سایت سئو‌شده تحویل می‌دهید و رتبهٔ اول را تضمین می‌کنید؟',
+        a: 'سئوی فنی را کامل پیاده می‌کنم: ساختار معنایی، متا، داده‌ساختاریافته، نقشهٔ سایت، سرعت و دسترس‌پذیری. اما هیچ‌کس نمی‌تواند رتبهٔ اول گوگل را تضمین کند؛ رتبه به کیفیت محتوا، میزان رقابت و اعتبار سایت هم بستگی دارد.',
+      },
+      {
+        q: 'آیا بک‌اند هم می‌نویسید؟',
+        a: 'تخصص و تجربهٔ من فرانت‌اند است. با APIهایی که تیم بک‌اند آماده کرده یا سرویس‌های آماده، مثل CMS، کار می‌کنم و اتصال آن‌ها را به رابط کاربری انجام می‌دهم.',
+      },
+      {
+        q: 'در چه پروژه‌های بزرگی کار کرده‌اید؟',
+        a: 'در سامانهٔ آزمون استخدامی دستگاه‌های اجرایی کشور و سامانهٔ آزمون استخدامی بانک مرکزی مشارکت داشته‌ام و در مرکز گسترش فناوری اطلاعات ایران (مگفا) روی رابط کاربری سکوی نماد اعتماد الکترونیکی (اینماد) کار کرده‌ام.',
+      },
+      {
+        q: 'برای همکاری پروژه‌ای یا استخدام در دسترس هستید؟',
+        a: 'بله، برای پروژه‌های جدید و فرصت‌های همکاری آماده‌ام. از طریق ایمیل amir.pampay@gmail.com یا شمارهٔ ۰۹۳۸ ۶۳۸ ۶۴۰۷ تماس بگیرید.',
+      },
+    ],
+  },
+  contact: {
+    kicker: 'تماس',
+    title: 'برای همکاری و سفارش طراحی سایت تماس بگیرید',
+    description:
+      'اگر برای توسعهٔ یک اپلیکیشن React، طراحی سایت یا یک فرصت همکاری فرانت‌اند به دنبال نیروی باتجربه هستید، خوشحال می‌شوم دربارهٔ جزئیات آن گفت‌وگو کنیم.',
+    marquee: 'بیایید بسازیم',
+    form: {
+      name: 'نام شما',
+      email: 'ایمیل شما',
+      message: 'پیام شما',
+      namePlaceholder: 'نام و نام خانوادگی',
+      emailPlaceholder: 'name@example.com',
+      messagePlaceholder: 'کمی دربارهٔ پروژه یا فرصت همکاری بنویسید…',
+      submit: 'نوشتن ایمیل',
+      opening: 'در حال باز کردن برنامهٔ ایمیل…',
+      subject: 'پیام از وب‌سایت —',
+    },
+  },
+  footer: {
+    copyright: `© ${faDigits.format(year)} امیرحسین غلام‌پور`,
+    built: 'ساخته‌شده با Next.js و TypeScript',
+  },
+  game: {
+    title: 'شکار باگ',
+    start: 'شروع',
+    score: 'امتیاز',
+    time: 'زمان',
+    best: 'رکورد',
+    again: 'دوباره',
+    close: 'خروج',
+    resultGood: 'شکارچی حرفه‌ای! حالت هایپردرایو فعال شد.',
+    resultOk: 'بد نبود. باگ‌ها هنوز زنده‌اند.',
+    hint: 'روی باگ‌ها کلیک کن؛ از موس فرار می‌کنند',
+  },
+}
