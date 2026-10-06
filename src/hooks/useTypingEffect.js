@@ -6,25 +6,39 @@ export function useTypingEffect(words, typingSpeed = 80, deletingSpeed = 50, pau
   const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
+    if (words.length === 0) return undefined
+
     const currentWord = words[wordIndex % words.length]
+    const isComplete = displayText === currentWord
+    const delay = isComplete && !isDeleting
+      ? pauseDuration
+      : isDeleting
+        ? deletingSpeed
+        : typingSpeed
 
     const timeout = setTimeout(() => {
       if (!isDeleting) {
-        setDisplayText(currentWord.slice(0, displayText.length + 1))
-        if (displayText.length + 1 === currentWord.length) {
-          setTimeout(() => setIsDeleting(true), pauseDuration)
-        }
+        if (isComplete) setIsDeleting(true)
+        else setDisplayText(currentWord.slice(0, displayText.length + 1))
       } else {
         setDisplayText(currentWord.slice(0, displayText.length - 1))
-        if (displayText.length - 1 === 0) {
+        if (displayText.length <= 1) {
           setIsDeleting(false)
           setWordIndex((prev) => (prev + 1) % words.length)
         }
       }
-    }, isDeleting ? deletingSpeed : typingSpeed)
+    }, delay)
 
     return () => clearTimeout(timeout)
-  }, [displayText, isDeleting, wordIndex, words, typingSpeed, deletingSpeed, pauseDuration])
+  }, [
+    deletingSpeed,
+    displayText,
+    isDeleting,
+    pauseDuration,
+    typingSpeed,
+    wordIndex,
+    words,
+  ])
 
   return displayText
 }

@@ -1,4 +1,5 @@
-import { siteConfig, footerConfig, socialLinks } from '../../data/portfolio'
+import { socialLinks } from '../../data/portfolio'
+import { useLocale } from '../../hooks/useLocale'
 
 const socialIcons = {
   github: (
@@ -24,16 +25,19 @@ const socialIcons = {
 }
 
 export default function Footer() {
+  const { content } = useLocale()
+  const { footer, site } = content
+
   return (
     <footer className="footer">
       <div className="footer__inner container">
         <div className="footer__brand">
-          <a href="#home" className="footer__logo">
+          <a href="#home" className="footer__logo" dir="ltr">
             <span className="navbar__logo-bracket">&lt;</span>
-            {siteConfig.name.split(' ')[0]}
+            {site.logoName}
             <span className="navbar__logo-bracket">/&gt;</span>
           </a>
-          <p className="footer__tagline">{siteConfig.tagline}</p>
+          <p className="footer__tagline">{site.tagline}</p>
         </div>
 
         <div className="footer__social">
@@ -46,15 +50,15 @@ export default function Footer() {
               aria-label={link.label}
               className="footer__social-link"
             >
-              {socialIcons[link.icon]}
+              <span aria-hidden="true">{socialIcons[link.icon]}</span>
             </a>
           ))}
         </div>
 
         <div className="footer__bottom">
-          <p>{footerConfig.copyright}</p>
+          <p>{footer.copyright}</p>
           <a href="#home" className="footer__back-top">
-            {footerConfig.backToTop} ↑
+            {footer.backToTop} ↑
           </a>
         </div>
       </div>

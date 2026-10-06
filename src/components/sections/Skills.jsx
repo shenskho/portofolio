@@ -1,18 +1,20 @@
-import { skillsConfig } from '../../data/portfolio'
 import SectionHeading from '../ui/SectionHeading'
 import SkillBar from '../ui/SkillBar'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { useLocale } from '../../hooks/useLocale'
 
 export default function Skills() {
+  const { content } = useLocale()
+  const { skills } = content
   const tagsRef = useScrollReveal()
 
   return (
     <section id="skills" className="skills section">
       <div className="container">
-        <SectionHeading subtitle={skillsConfig.subtitle} title={skillsConfig.title} />
+        <SectionHeading subtitle={skills.subtitle} title={skills.title} />
 
         <div className="skills__grid">
-          {skillsConfig.categories.map((category, ci) => (
+          {skills.categories.map((category, ci) => (
             <div key={category.name} className="skills__category">
               <h3 className="skills__category-name">{category.name}</h3>
               {category.skills.map((skill, si) => (
@@ -28,11 +30,12 @@ export default function Skills() {
         </div>
 
         <div ref={tagsRef} className="skills__tags scroll-reveal">
-          {skillsConfig.techStack.map((tech, i) => (
+          {skills.techStack.map((tech, i) => (
             <span
               key={tech}
               className="skills__tag"
               style={{ '--tag-index': i }}
+              dir="ltr"
             >
               {tech}
             </span>

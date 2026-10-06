@@ -1,6 +1,6 @@
-import { experienceConfig } from '../../data/portfolio'
 import SectionHeading from '../ui/SectionHeading'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { useLocale } from '../../hooks/useLocale'
 
 function TimelineItem({ item, index }) {
   const ref = useScrollReveal()
@@ -18,10 +18,11 @@ function TimelineItem({ item, index }) {
         <span className="timeline__period">{item.period}</span>
         <h3 className="timeline__role">{item.role}</h3>
         <p className="timeline__company">{item.company}</p>
+        <p className="timeline__location">{item.location}</p>
         <p className="timeline__desc">{item.description}</p>
         <div className="timeline__tags">
           {item.tags.map((tag) => (
-            <span key={tag} className="timeline__tag">{tag}</span>
+            <span key={tag} className="timeline__tag" dir="ltr">{tag}</span>
           ))}
         </div>
       </div>
@@ -30,13 +31,16 @@ function TimelineItem({ item, index }) {
 }
 
 export default function Experience() {
+  const { content } = useLocale()
+  const { experience } = content
+
   return (
     <section id="experience" className="experience section">
       <div className="container">
-        <SectionHeading subtitle={experienceConfig.subtitle} title={experienceConfig.title} />
+        <SectionHeading subtitle={experience.subtitle} title={experience.title} />
 
         <div className="timeline">
-          {experienceConfig.items.map((item, i) => (
+          {experience.items.map((item, i) => (
             <TimelineItem key={item.company + item.role} item={item} index={i} />
           ))}
         </div>
