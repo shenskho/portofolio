@@ -1,0 +1,102 @@
+.footer {
+  position: relative;
+  z-index: 1;
+  padding-block: clamp(40px, 6vw, 80px) 64px;
+  border-block-start: 1px solid var(--line);
+  overflow: hidden;
+}
+.wordWrap {
+  --sx: 50%;
+  --sy: 180%;
+  position: relative;
+  user-select: none;
+}
+/* Outline drawn as a filled glyph plus 1px shadows: unlike -webkit-text-stroke it never
+   shows the overlapping contours inside variable-font letters. */
+.word {
+  font-size: min(13.6vw, 17rem);
+  font-weight: 800;
+  line-height: 0.82;
+  letter-spacing: -0.06em;
+  font-variation-settings: 'wdth' 78;
+  text-align: center;
+  white-space: nowrap;
+  padding-block-end: 0.06em;
+  color: var(--bg);
+  text-shadow:
+    1px 0 var(--line-2), -1px 0 var(--line-2), 0 1px var(--line-2), 0 -1px var(--line-2),
+    1px 1px var(--line-2), -1px -1px var(--line-2), 1px -1px var(--line-2), -1px 1px var(--line-2);
+}
+.wordFill {
+  position: absolute;
+  inset: 0;
+  color: var(--lime);
+  text-shadow: none;
+  -webkit-mask-image: radial-gradient(circle 240px at var(--sx) var(--sy), #000 0, transparent 70%);
+  mask-image: radial-gradient(circle 240px at var(--sx) var(--sy), #000 0, transparent 70%);
+}
+.row {
+  display: grid;
+  gap: 24px;
+  align-items: center;
+  margin-block-start: clamp(28px, 4vw, 48px);
+  padding-block-start: 24px;
+  border-block-start: 1px solid var(--line);
+}
+@media (min-width: 800px) {
+  .row {
+    grid-template-columns: 1fr auto auto;
+    gap: 40px;
+  }
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.9rem;
+  color: var(--fg-1);
+}
+.social {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.social a {
+  display: inline-grid;
+  place-items: center;
+  min-width: 42px;
+  height: 42px;
+  padding-inline: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  transition: border-color 0.3s, color 0.3s;
+}
+.social a:hover {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+.social .lang {
+  padding-inline: 16px;
+  font-size: 0.85rem;
+}
+.top {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: start;
+  height: 42px;
+  padding-inline: 18px;
+  border-radius: 999px;
+  background: var(--fg);
+  color: var(--bg);
+  font-weight: 600;
+  font-size: 0.88rem;
+  transition: background-color 0.3s;
+}
+.top:hover {
+  background: var(--lime);
+  color: var(--on-lime);
+}
+.loc {
+  margin-block-start: 20px;
+}

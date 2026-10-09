@@ -1,0 +1,401 @@
+@property --cut {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 0%;
+}
+
+.stage {
+  --px: 50%;
+  --py: 44%;
+  --rx: 0deg;
+  --ry: 0deg;
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: 540px;
+  margin-inline: auto;
+  container-type: inline-size;
+}
+
+/* ── giant outlined word behind the subject ── */
+.back {
+  position: absolute;
+  inset-inline: -8%;
+  inset-block-start: 2%;
+  z-index: -1;
+  display: grid;
+  place-items: center;
+  font-size: 40cqw;
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  font-variation-settings: 'wdth' 76;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line-2);
+  user-select: none;
+  translate: calc((var(--px) - 50%) * -0.22) calc((var(--py) - 50%) * -0.12);
+}
+
+.rings {
+  position: absolute;
+  inset: -6% -10% 4%;
+  z-index: -1;
+  pointer-events: none;
+}
+.rings svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ringA,
+.ringB {
+  fill: none;
+  stroke: var(--line-2);
+  stroke-width: 0.5;
+  transform-origin: 100px 100px;
+}
+.ringA {
+  stroke-dasharray: 1 5;
+  animation: spin 60s linear infinite;
+}
+.ringB {
+  stroke: rgba(200, 255, 61, 0.32);
+  stroke-dasharray: 18 6 2 6;
+  animation: spin 40s linear infinite reverse;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── the tilting frame ── */
+.frame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  transform: perspective(1100px) rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  touch-action: pan-y;
+}
+html:global(.js) .stage:not([data-in]) {
+  --cut: 100%;
+}
+html:global(.js):not(:global(.fx)) .stage:not([data-in]) .frame {
+  animation: cut-failsafe 0s 3.5s forwards;
+}
+.stage[data-in] {
+  animation: cut-in 2.4s var(--ease) both;
+}
+@keyframes cut-in {
+  from {
+    --cut: 100%;
+  }
+  to {
+    --cut: 0%;
+  }
+}
+@keyframes cut-failsafe {
+  to {
+    clip-path: none;
+  }
+}
+.frame {
+  clip-path: inset(-20% -20% var(--cut) -20%);
+}
+
+.aura,
+.base,
+.lit,
+.ghost {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.base {
+  object-fit: contain;
+  object-position: bottom center;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  filter: grayscale(1) brightness(0.52) contrast(1.15) drop-shadow(1px 0 0 var(--lime)) drop-shadow(-1px 0 0 var(--lime))
+    drop-shadow(0 0 22px rgba(200, 255, 61, 0.28));
+}
+.lit {
+  background: var(--img) bottom center / contain no-repeat;
+  -webkit-mask-image: radial-gradient(circle 34cqw at var(--px) var(--py), #000 0 52%, transparent 100%);
+  mask-image: radial-gradient(circle 34cqw at var(--px) var(--py), #000 0 52%, transparent 100%);
+  pointer-events: none;
+}
+.aura {
+  z-index: -1;
+  background: radial-gradient(circle 46cqw at var(--px) var(--py), var(--lime), transparent 72%);
+  -webkit-mask: var(--img) bottom center / contain no-repeat;
+  mask: var(--img) bottom center / contain no-repeat;
+  filter: blur(28px);
+  opacity: 0.5;
+  transform: scale(1.05);
+  pointer-events: none;
+}
+
+.stage[data-reduce] .base {
+  filter: none;
+}
+.stage[data-reduce] .lit,
+.stage[data-reduce] .aura {
+  display: none;
+}
+
+/* ── glitch on click ── */
+.ghost {
+  opacity: 0;
+  mix-blend-mode: screen;
+  -webkit-mask: var(--img) bottom center / contain no-repeat;
+  mask: var(--img) bottom center / contain no-repeat;
+  pointer-events: none;
+}
+.ghostA {
+  background: var(--flame);
+}
+.ghostB {
+  background: var(--sky);
+}
+.stage[data-glitch] .ghostA {
+  animation: glitch-a 0.55s steps(2, end);
+}
+.stage[data-glitch] .ghostB {
+  animation: glitch-b 0.55s steps(2, end);
+}
+.stage[data-glitch] .base {
+  animation: jitter 0.55s steps(3, end);
+}
+@keyframes glitch-a {
+  0% { opacity: 0.9; transform: translate(-10px, 2px); clip-path: inset(10% 0 60% 0); }
+  25% { opacity: 0.8; transform: translate(12px, -3px); clip-path: inset(55% 0 12% 0); }
+  50% { opacity: 0.9; transform: translate(-6px, 0); clip-path: inset(30% 0 35% 0); }
+  75% { opacity: 0.7; transform: translate(8px, 2px); clip-path: inset(72% 0 4% 0); }
+  100% { opacity: 0; transform: none; clip-path: inset(0); }
+}
+@keyframes glitch-b {
+  0% { opacity: 0.8; transform: translate(10px, -2px); clip-path: inset(48% 0 20% 0); }
+  25% { opacity: 0.9; transform: translate(-12px, 3px); clip-path: inset(8% 0 70% 0); }
+  50% { opacity: 0.8; transform: translate(7px, 0); clip-path: inset(62% 0 8% 0); }
+  75% { opacity: 0.7; transform: translate(-9px, -2px); clip-path: inset(24% 0 44% 0); }
+  100% { opacity: 0; transform: none; clip-path: inset(0); }
+}
+@keyframes jitter {
+  0% { transform: translateX(0); }
+  33% { transform: translateX(-4px) skewX(2deg); }
+  66% { transform: translateX(5px) skewX(-3deg); }
+  100% { transform: none; }
+}
+
+/* ── scan line used for the reveal ── */
+.scan {
+  position: absolute;
+  inset-inline: -6%;
+  inset-block-start: calc(100% - var(--cut));
+  height: 2px;
+  background: var(--lime);
+  box-shadow: 0 0 28px 6px rgba(200, 255, 61, 0.55);
+  opacity: 0;
+  pointer-events: none;
+}
+.stage[data-in] .scan {
+  animation: scan-fade 2.4s var(--ease) both;
+}
+@keyframes scan-fade {
+  0%, 92% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ── HUD furniture ── */
+.corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--lime);
+  pointer-events: none;
+}
+.c1 { inset-block-start: 0; inset-inline-start: 0; border-inline-end: 0; border-block-end: 0; }
+.c2 { inset-block-start: 0; inset-inline-end: 0; border-inline-start: 0; border-block-end: 0; }
+.c3 { inset-block-end: 0; inset-inline-start: 0; border-inline-end: 0; border-block-start: 0; }
+.c4 { inset-block-end: 0; inset-inline-end: 0; border-inline-start: 0; border-block-start: 0; }
+.tag {
+  position: absolute;
+  padding: 3px 8px;
+  background: rgba(7, 7, 10, 0.7);
+  color: var(--lime);
+  font-size: 0.62rem;
+  pointer-events: none;
+}
+.tagTop { inset-block-start: 10px; inset-inline-start: 26px; }
+.tagBottom { inset-block-end: 10px; inset-inline-end: 26px; }
+
+.caption {
+  margin-block-start: 18px;
+  text-align: center;
+  color: var(--fg-2);
+}
+
+/* ── orbiting chips: static pose in CSS (no-JS / reduced motion), moved by Portrait.tsx while visible ── */
+.orbit {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.chip {
+  position: absolute;
+  top: 46%;
+  left: 50%; /* physical: the orbit maths is left-to-right pixels, also on RTL pages */
+  padding: 6px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: rgba(12, 12, 17, 0.88);
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  direction: ltr;
+  white-space: nowrap;
+  color: var(--fg);
+  translate: calc(cos(var(--a0)) * (50cqw - 56px) - 50%) calc(sin(var(--a0)) * 24cqw - 50%);
+  will-change: translate, scale, opacity;
+}
+.chip::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-inline-end: 8px;
+  border-radius: 50%;
+  background: var(--lime);
+}
+
+/* ── empty state: the drop zone ── */
+.drop {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--line-2);
+  background: repeating-linear-gradient(135deg, rgba(236, 235, 228, 0.025) 0 8px, transparent 8px 16px);
+  transition: border-color 0.3s, background-color 0.3s;
+}
+.stage[data-dragging] .drop {
+  border-color: var(--lime);
+  background-color: var(--lime-soft);
+}
+.silhouette {
+  position: absolute;
+  inset: 8% 12% 0;
+  width: 76%;
+  height: 92%;
+  fill: none;
+  stroke: var(--lime);
+  stroke-width: 1.4;
+  stroke-dasharray: 5 7;
+  opacity: 0.55;
+  animation: march 1.4s linear infinite;
+}
+@keyframes march {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+.dropScan {
+  position: absolute;
+  inset-inline: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--lime), transparent);
+  box-shadow: 0 0 20px rgba(200, 255, 61, 0.5);
+  animation: drop-scan 3.2s ease-in-out infinite alternate;
+}
+@keyframes drop-scan {
+  from { inset-block-start: 6%; }
+  to { inset-block-start: 94%; }
+}
+.dropBtn {
+  position: relative;
+  z-index: 1;
+  align-self: end;
+  margin-block-end: 7%;
+  display: grid;
+  gap: 8px;
+  max-width: 82%;
+  padding: 18px 20px;
+  text-align: center;
+  background: rgba(7, 7, 10, 0.82);
+  border: 1px solid var(--line-2);
+  transition: border-color 0.3s, transform 0.3s var(--ease);
+}
+.dropBtn:hover {
+  border-color: var(--lime);
+  transform: translateY(-3px);
+}
+.dropBtn strong {
+  font-size: 1.02rem;
+  line-height: 1.5;
+}
+.dropBtn span {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--fg-1);
+}
+
+.tools {
+  margin-block-start: 18px;
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: var(--bg-1);
+  font-size: 0.82rem;
+  color: var(--fg-1);
+}
+.tools div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.toolBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding-inline: 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--fg);
+  transition: border-color 0.3s, color 0.3s;
+}
+.toolBtn:hover {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage[data-in],
+  .stage[data-in] .scan,
+  .ringA,
+  .ringB,
+  .silhouette,
+  .dropScan {
+    animation: none;
+  }
+  .stage {
+    --cut: 0%;
+  }
+}
+
+/* calm-mode mirror: same rules as prefers-reduced-motion, switched by html[data-calm] */
+:global(html[data-calm]) .stage[data-in],
+:global(html[data-calm]) .stage[data-in] .scan,
+:global(html[data-calm]) .ringA,
+:global(html[data-calm]) .ringB,
+:global(html[data-calm]) .silhouette,
+:global(html[data-calm]) .dropScan {
+    animation: none;
+  }
+:global(html[data-calm]) .stage {
+    --cut: 0%;
+  }
