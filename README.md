@@ -9,7 +9,7 @@ npm install
 npm run dev            # http://localhost:3000
 ```
 
-برای بیلد نهایی **حتماً دامنهٔ واقعی** را بدهید (canonical، sitemap، hreflang و داده‌ساختاریافته به آن نیاز دارند؛ بدون آن بیلد عمداً خطا می‌دهد):
+برای بیلد نهایی **حتماً دامنهٔ واقعی** را بدهید (canonical، sitemap، hreflang و داده‌ساختاریافته به آن نیاز دارند). اگر خالی باشد، بدون `https://` نوشته شده باشد، مسیر داشته باشد یا هنوز مقدار نمونهٔ `your-domain.com` باشد، بیلد عمداً با پیام راهنما شکست می‌خورد:
 
 ```bash
 cp .env.example .env.local     # NEXT_PUBLIC_SITE_URL را ویرایش کنید
@@ -19,7 +19,9 @@ npm start                      # پیش‌نمایش out/ روی http://localhos
 ```
 
 ### انتشار
-محتوای پوشهٔ `out/` را روی هاست بارگذاری کنید (cPanel، Nginx، Netlify، Cloudflare Pages، Vercel و …). فایل‌های `public/.htaccess` (Apache/cPanel) و `public/_headers` (Netlify/Cloudflare) کش، فشرده‌سازی و هدرهای امنیتی را تنظیم می‌کنند. بعد از انتشار، راهنمای [docs/SEO-CHECKLIST.md](docs/SEO-CHECKLIST.md) را برای ثبت در Search Console دنبال کنید.
+> **مهم:** سایت باید روی **ریشهٔ دامنه** (مثل `https://your-domain.ir/`) باشد، نه در زیرمسیر مثل `/portfolio/`. آدرس فایل‌ها (`/_next/…`) مطلق است.
+
+محتوای پوشهٔ `out/` را روی هاست بارگذاری کنید (cPanel، Nginx، Netlify، Cloudflare Pages، Vercel، GitHub Pages با فایل `public/.nojekyll` که همراه پروژه است، و …). فایل‌های `public/.htaccess` (Apache/cPanel) و `public/_headers` (Netlify/Cloudflare) کش، فشرده‌سازی و هدرهای امنیتی را تنظیم می‌کنند. بعد از انتشار، راهنمای [docs/SEO-CHECKLIST.md](docs/SEO-CHECKLIST.md) را برای ثبت در Search Console دنبال کنید.
 
 ## عکس بدون پس‌زمینه (بخش «درباره من»)
 
@@ -59,7 +61,7 @@ src/lib/seo.ts, jsonld.tsx, llms.ts   متادیتا، داده‌ساختاری
 - **جعبهٔ مهارت‌ها:** تگ‌ها اجسام فیزیکی‌اند؛ بکشید، پرتاب کنید یا جعبه را تکان بدهید.
 - **بازی (دکمهٔ «بازی» در منو):** باگ‌ها را شکار کنید؛ از موس فرار می‌کنند. ۱۲ امتیاز = حالت هایپردرایو.
 - **کد مخفی:** ↑ ↑ ↓ ↓ ← → ← → B A
-- همهٔ افکت‌ها با `prefers-reduced-motion` خاموش می‌شوند و سایت بدون جاوااسکریپت هم کامل خوانده می‌شود.
+- همهٔ افکت‌ها با `prefers-reduced-motion` خاموش می‌شوند؛ دکمهٔ «توقف حرکت‌ها» در منو هم همین کار را برای هر بازدیدکننده می‌کند (و انتخابش را به خاطر می‌سپارد). سایت بدون جاوااسکریپت هم کامل خوانده می‌شود.
 
 ## تنظیمات سئو
 `.env.local` را ببینید: `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` (متای تأیید Search Console)، و در صورت نیاز Bing/Yandex.

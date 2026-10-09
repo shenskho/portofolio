@@ -20,7 +20,7 @@ export default function Skills({ locale, content }: { locale: Locale; content: C
 
         <div className={styles.layout}>
           <div data-reveal>
-            <SkillPlayground pills={skills.pills} legend={skills.legend} hint={skills.playHint} shake={skills.shake} />
+            <SkillPlayground pills={skills.pills} legend={skills.legend} legendLabel={ui.legend} hint={skills.playHint} shake={skills.shake} />
           </div>
 
           <div className={styles.sheet} data-reveal data-spot style={vars({ '--d': 120 })}>

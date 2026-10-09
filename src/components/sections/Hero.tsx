@@ -8,7 +8,7 @@ import styles from './Hero.module.css'
 function Scribble() {
   return (
     <svg className={styles.scribble} viewBox="0 0 420 28" preserveAspectRatio="none" aria-hidden focusable="false">
-      <path d="M4 18C64 6 118 24 206 13S352 6 416 16" pathLength="1" />
+      <path d="M4 18C64 6 118 24 206 13S352 6 416 16" pathLength="100" />
     </svg>
   )
 }
@@ -99,6 +99,7 @@ export default function Hero({ locale, content }: { locale: Locale; content: Con
                 data-decimals={stat.decimals}
                 data-suffix={stat.suffix}
                 data-num-locale={locale}
+                data-count-delay={1100}
               >
                 {nf(stat.value, stat.decimals)}
                 {stat.suffix}

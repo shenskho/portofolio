@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import type { SkillKind } from '@/data/types'
+import { useCalm } from '@/lib/motion'
 import styles from './Skills.module.css'
 
 interface Pill {
@@ -34,14 +35,17 @@ const FLOOR_FRICTION = 0.9
 export default function SkillPlayground({
   pills,
   legend,
+  legendLabel,
   hint,
   shake,
 }: {
   pills: Pill[]
   legend: Record<SkillKind, string>
+  legendLabel: string
   hint: string
   shake: string
 }) {
+  const calm = useCalm()
   const boxRef = useRef<HTMLDivElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
   const shakeRef = useRef<() => void>(() => {})
@@ -50,7 +54,7 @@ export default function SkillPlayground({
     const box = boxRef.current
     const list = listRef.current
     if (!box || !list) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (calm) return
 
     const items = Array.from(list.querySelectorAll<HTMLElement>('li'))
     let bodies: Body[] = []
@@ -198,13 +202,20 @@ export default function SkillPlayground({
       if (!running) return
       const frame = Math.min(0.034, (now - last) / 1000 || 0.016)
       last = now
-      let energy = 0
+      const before = bodies.map((b) => b.x + b.y * 1.0001)
       const sub = 2
-      for (let s = 0; s < sub; s++) energy = step(frame / sub)
+      for (let s = 0; s < sub; s++) step(frame / sub)
       paint()
-      const onScreenSettled = energy / Math.max(1, bodies.length) < 260 && !drag
-      calmFor = onScreenSettled ? calmFor + frame : 0
-      if (calmFor > 1.4) {
+      // Asleep = nobody moved more than a fraction of a pixel this frame (resting piles jitter in velocity, not in position).
+      let moved = 0
+      bodies.forEach((b, i) => (moved += Math.abs(b.x + b.y * 1.0001 - before[i])))
+      const settled = moved / Math.max(1, bodies.length) < 0.12 && !drag
+      calmFor = settled ? calmFor + frame : 0
+      if (calmFor > 0.9) {
+        for (const b of bodies) {
+          b.vx = 0
+          b.vy = 0
+        }
         running = false
         return
       }
@@ -228,17 +239,17 @@ export default function SkillPlayground({
       wake()
     }
 
+    let tap: { body: Body; x: number; y: number; t: number } | null = null
     const onDown = (e: PointerEvent) => {
       const li = (e.target as Element).closest('li')
       const body = bodies.find((b) => b.el === li)
       if (!body || !started) return
       if (e.pointerType === 'touch') {
-        // Touch keeps page scrolling intact: a tap pokes the pill instead of dragging it.
-        body.vy = -900
-        body.vx += (Math.random() - 0.5) * 500
-        wake()
+        // Touch keeps page scrolling intact: only a quick tap (checked on release) pokes the pill.
+        tap = { body, x: e.clientX, y: e.clientY, t: performance.now() }
         return
       }
+      if (e.button !== 0) return
       const r = box.getBoundingClientRect()
       drag = { body, id: e.pointerId, ox: e.clientX - r.left - body.x, oy: e.clientY - r.top - body.y, px: body.x, py: body.y, t: performance.now() }
       body.dragging = true
@@ -262,7 +273,18 @@ export default function SkillPlayground({
       drag.t = now
       wake()
     }
+    const onTouchEnd = (e: PointerEvent) => {
+      if (!tap || e.pointerType !== 'touch') return
+      const { body, x, y, t } = tap
+      tap = null
+      if (Math.hypot(e.clientX - x, e.clientY - y) < 10 && performance.now() - t < 350) {
+        body.vy = -900
+        body.vx += (Math.random() - 0.5) * 500
+        wake()
+      }
+    }
     const onUp = (e: PointerEvent) => {
+      onTouchEnd(e)
       if (!drag || e.pointerId !== drag.id) return
       drag.body.dragging = false
       delete drag.body.el.dataset.drag
@@ -320,7 +342,7 @@ export default function SkillPlayground({
       box.dataset.mode = 'static'
       for (const b of bodies) b.el.style.transform = ''
     }
-  }, [])
+  }, [calm])
 
   return (
     <div>
@@ -340,7 +362,7 @@ export default function SkillPlayground({
           {shake}
         </button>
       </div>
-      <ul className={styles.legend} aria-label="legend">
+      <ul className={styles.legend} aria-label={legendLabel}>
         {(Object.keys(legend) as SkillKind[]).map((k) => (
           <li key={k} data-kind={k}>
             <span className={styles.pillDot} aria-hidden="true" />

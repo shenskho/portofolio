@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { vars } from '@/lib/css'
+import { useCalm } from '@/lib/motion'
 import { DownloadIcon, CloseIcon } from '@/components/ui/Icons'
 import styles from './Portrait.module.css'
 
@@ -21,6 +22,15 @@ interface Labels {
 
 const STORAGE_KEY = 'portrait-preview-v1'
 const MAX_HEIGHT = 1600
+const MAX_WIDTH = 2400
+const MAX_STORED_CHARS = 3_500_000
+
+/** Only ever let a same-origin path or a base64 image data URL reach <img src> / CSS url(). */
+const SAFE_IMAGE = /^(data:image\/(?:webp|png|jpeg|avif);base64,[A-Za-z0-9+/=]+|\/[\w./-]+)$/
+
+function safeImage(value: string | null): string | null {
+  return value && SAFE_IMAGE.test(value) ? value : null
+}
 
 /**
  * The "background-free photo" showcase.
@@ -37,7 +47,8 @@ export default function Portrait({ src, labels, caption }: { src: string | null;
   const [dragging, setDragging] = useState(false)
   const [error, setError] = useState(false)
   const [glitch, setGlitch] = useState(false)
-  const image = src ?? preview
+  const image = safeImage(src ?? preview)
+  const calm = useCalm()
 
   // Restore a previously dropped preview (client-only).
   useEffect(() => {
@@ -45,7 +56,7 @@ export default function Portrait({ src, labels, caption }: { src: string | null;
     try {
       const stored = window.localStorage.getItem(STORAGE_KEY)
       // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage only exists on the client
-      if (stored) setPreview(stored)
+      if (safeImage(stored)) setPreview(stored)
     } catch {
       /* storage unavailable: preview just won't persist */
     }
@@ -60,20 +71,25 @@ export default function Portrait({ src, labels, caption }: { src: string | null;
     const url = URL.createObjectURL(file)
     const img = new Image()
     img.onload = () => {
-      const scale = Math.min(1, MAX_HEIGHT / img.naturalHeight)
+      const scale = Math.min(1, MAX_HEIGHT / img.naturalHeight, MAX_WIDTH / img.naturalWidth)
       const canvas = document.createElement('canvas')
-      canvas.width = Math.round(img.naturalWidth * scale)
-      canvas.height = Math.round(img.naturalHeight * scale)
+      canvas.width = Math.max(1, Math.round(img.naturalWidth * scale))
+      canvas.height = Math.max(1, Math.round(img.naturalHeight * scale))
       canvas.getContext('2d')?.drawImage(img, 0, 0, canvas.width, canvas.height)
-      // WebP keeps the alpha channel and is far smaller than the original PNG.
+      // WebP keeps the alpha channel and is far smaller than the original PNG. Browsers that cannot encode
+      // WebP (Safari) silently return PNG instead, so the real type is read back from the data URL.
       const dataUrl = canvas.toDataURL('image/webp', 0.92)
+      URL.revokeObjectURL(url)
+      if (!safeImage(dataUrl)) {
+        setError(true)
+        return
+      }
       setPreview(dataUrl)
       try {
-        window.localStorage.setItem(STORAGE_KEY, dataUrl)
+        if (dataUrl.length <= MAX_STORED_CHARS) window.localStorage.setItem(STORAGE_KEY, dataUrl)
       } catch {
         /* too large for storage: preview lasts until reload */
       }
-      URL.revokeObjectURL(url)
     }
     img.onerror = () => {
       setError(true)
@@ -97,10 +113,31 @@ export default function Portrait({ src, labels, caption }: { src: string | null;
   useEffect(() => {
     const stage = stageRef.current
     if (!stage) return
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduce) {
+    if (calm) {
       stage.setAttribute('data-reduce', '')
       return
+    }
+    stage.removeAttribute('data-reduce')
+
+    // Orbiting tags are driven from here (cheap transform writes, only while the stage is on screen).
+    const chips = Array.from(stage.querySelectorAll<HTMLElement>('[data-chip]')).map((el) => ({
+      el,
+      a0: (Number(el.dataset.a0) * Math.PI) / 180,
+      speed: (Math.PI * 2) / (Number(el.dataset.period) * 1000),
+    }))
+    const placeChips = (now: number) => {
+      const W = stage.clientWidth
+      for (const c of chips) {
+        const a = c.a0 + now * c.speed
+        const cw = c.el.offsetWidth
+        const ch = c.el.offsetHeight
+        const rx = Math.max(8, (W - cw) / 2 - 4)
+        const x = Math.cos(a) * rx
+        const y = Math.sin(a) * W * 0.24
+        c.el.style.translate = `${(x - cw / 2).toFixed(1)}px ${(y - ch / 2).toFixed(1)}px`
+        c.el.style.scale = (0.92 + Math.sin(a) * 0.12).toFixed(3)
+        c.el.style.opacity = (0.82 + Math.sin(a) * 0.18).toFixed(3)
+      }
     }
 
     const s = { px: 50, py: 44, tx: 50, ty: 44, rx: 0, ry: 0, trx: 0, tryy: 0 }
@@ -123,6 +160,7 @@ export default function Portrait({ src, labels, caption }: { src: string | null;
       stage.style.setProperty('--py', `${s.py.toFixed(2)}%`)
       stage.style.setProperty('--rx', `${s.rx.toFixed(2)}deg`)
       stage.style.setProperty('--ry', `${s.ry.toFixed(2)}deg`)
+      placeChips(now)
       raf = requestAnimationFrame(loop)
     }
 
@@ -151,8 +189,13 @@ export default function Portrait({ src, labels, caption }: { src: string | null;
       io.disconnect()
       stage.removeEventListener('pointermove', onMove)
       stage.removeEventListener('pointerleave', onLeave)
+      for (const c of chips) {
+        c.el.style.translate = ''
+        c.el.style.scale = ''
+        c.el.style.opacity = ''
+      }
     }
-  }, [image])
+  }, [image, calm])
 
   const fireGlitch = () => {
     setGlitch(true)
@@ -256,13 +299,20 @@ export default function Portrait({ src, labels, caption }: { src: string | null;
           SUBJ // AG-01
         </span>
         <span className={`${styles.tag} ${styles.tagBottom} mono latin`} aria-hidden="true">
-          {labels.scanLabel} {image ? '100%' : '000%'}
+          SCAN {image ? '100%' : '000%'}
         </span>
       </div>
 
       <ul className={styles.orbit} aria-hidden="true">
         {orbit.map((chip, i) => (
-          <li key={chip} className={`${styles.chip} latin`} style={vars({ '--a0': `${(360 / orbit.length) * i}deg`, '--sp': `${16 + i * 3}s` })}>
+          <li
+            key={chip}
+            className={styles.chip}
+            data-chip
+            data-a0={(360 / orbit.length) * i}
+            data-period={16 + i * 3}
+            style={vars({ '--a0': `${(360 / orbit.length) * i}deg` })}
+          >
             {chip}
           </li>
         ))}
@@ -274,7 +324,7 @@ export default function Portrait({ src, labels, caption }: { src: string | null;
         <div className={styles.tools}>
           <p>{labels.previewNote}</p>
           <div>
-            <a className={styles.toolBtn} href={preview} download="portrait.webp">
+            <a className={styles.toolBtn} href={preview} download={preview.startsWith('data:image/webp') ? 'portrait.webp' : 'portrait.png'}>
               <DownloadIcon width={16} height={16} />
               {labels.download}
             </a>

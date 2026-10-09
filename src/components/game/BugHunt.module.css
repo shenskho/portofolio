@@ -8,6 +8,9 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
+  /* While a round is running the layer catches every click, so a missed bug never activates a link underneath. */
+  pointer-events: auto;
+  touch-action: none;
 }
 .bug {
   position: absolute;

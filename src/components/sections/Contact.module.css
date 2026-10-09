@@ -33,6 +33,9 @@
   color: var(--lime);
 }
 .value {
+  display: inline-block;
+  justify-self: start;
+  padding-block: 6px;
   min-width: 0;
   overflow-wrap: anywhere;
   color: var(--fg);
@@ -99,7 +102,7 @@
 .field textarea {
   width: 100%;
   padding: 14px 16px;
-  border: 1px solid var(--line-2);
+  border: 1px solid rgba(236, 235, 228, 0.5);
   border-radius: 0;
   background: var(--bg);
   color: var(--fg);
@@ -111,14 +114,18 @@
 }
 .field input::placeholder,
 .field textarea::placeholder {
-  color: var(--fg-2);
-  opacity: 0.8;
+  color: var(--fg-1);
+  opacity: 1;
 }
 .field input:focus,
 .field textarea:focus {
   outline: none;
   border-color: var(--lime);
   box-shadow: 0 0 0 3px rgba(200, 255, 61, 0.14);
+}
+.limit {
+  font-size: 0.78rem;
+  color: var(--fg-2);
 }
 .form button {
   justify-self: start;

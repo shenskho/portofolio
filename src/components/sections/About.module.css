@@ -26,7 +26,7 @@
   font-weight: 600;
 }
 .word {
-  opacity: clamp(0.2, calc(var(--p, 1) * var(--n) * 1.25 - var(--i) + 0.2), 1);
+  opacity: clamp(0.55, calc(var(--p, 1) * var(--n) * 1.25 - var(--i) + 0.55), 1);
   transition: opacity 0.25s linear;
 }
 
@@ -93,3 +93,16 @@
 .fact dd {
   font-size: 0.98rem;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .word {
+    opacity: 1;
+    transition: none;
+  }
+}
+
+/* calm-mode mirror: same rules as prefers-reduced-motion, switched by html[data-calm] */
+:global(html[data-calm]) .word {
+    opacity: 1;
+    transition: none;
+  }

@@ -12,7 +12,7 @@ export function buildLlmsTxt(): string {
     '',
     `> ${en.meta.description}`,
     '',
-    `${en.site.name} is a frontend/web developer based in Tehran, Iran, with 2.5+ years of professional experience building React applications and government digital services. He designs and builds fast, responsive, SEO-ready websites with React, Next.js and TypeScript. Persian: ${fa.meta.description}`,
+    `${en.site.name} is a frontend/web developer based in Tehran, Iran, with 2.5+ years of professional experience building React applications and government digital services. He designs and builds fast, responsive, SEO-ready websites with React, Next.js and TypeScript. His professional experience is mostly React applications (Redux, REST APIs); Next.js and TypeScript are skills he is actively deepening and used to build this site. Persian: ${fa.meta.description}`,
     '',
     '## Pages',
     `- [Home (فارسی)](${url('fa')}): ${fa.meta.title}`,

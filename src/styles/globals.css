@@ -1,12 +1,6 @@
 /* ───────────────────────────────────────────────────────────────
    Design tokens
    ─────────────────────────────────────────────────────────────── */
-@property --a {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
-
 :root {
   color-scheme: dark;
 
@@ -226,7 +220,7 @@ main {
    ─────────────────────────────────────────────────────────────── */
 .mono {
   font-family: var(--font-code);
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   line-height: 1.5;
   letter-spacing: var(--track);
   text-transform: uppercase;
@@ -418,7 +412,7 @@ main {
   border: 1px solid var(--line-2);
   border-radius: 999px;
   font-family: var(--font-code);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--fg-1);
   white-space: nowrap;
 }
@@ -436,13 +430,15 @@ html.js [data-reveal] {
   transform: translateY(28px);
   transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
   transition-delay: calc(var(--d, 0) * 1ms);
-  /* If scripts fail, show everything after 3s instead of leaving it hidden. */
-  animation: reveal-failsafe 0s 3.5s forwards;
 }
 html.js [data-reveal][data-in] {
   opacity: 1;
   transform: none;
-  animation: none;
+}
+/* Fail-safe: <html class="fx"> is added by Effects.tsx when scripts really run.
+   If it never appears (script error / blocked JS), reveal everything after 3.5s. */
+html.js:not(.fx) [data-reveal]:not([data-in]) {
+  animation: reveal-failsafe 0s 3.5s forwards;
 }
 @keyframes reveal-failsafe {
   to {
@@ -533,6 +529,9 @@ html.js [data-reveal][data-in] {
   color: transparent;
   -webkit-text-stroke: 1px var(--line-2);
 }
+.marquee__item[data-text]::before {
+  content: attr(data-text);
+}
 .marquee__star {
   width: clamp(14px, 1.6vw, 24px);
   height: clamp(14px, 1.6vw, 24px);
@@ -603,11 +602,11 @@ html.has-cursor textarea {
   background: var(--lime-soft);
 }
 .cursor[data-state='label'] .cursor__ring {
-  width: 88px;
-  height: 88px;
-  margin: -44px 0 0 -44px;
+  width: 68px;
+  height: 68px;
+  margin: -34px 0 0 -34px;
   border-color: var(--lime);
-  background: var(--lime);
+  background: rgba(200, 255, 61, 0.92);
 }
 .cursor[data-state='down'] .cursor__ring {
   width: 22px;
@@ -629,29 +628,31 @@ html.has-cursor textarea {
   opacity: 1;
 }
 
+/* Instrument readouts sit in the empty side margins (rotated), so they can never cover content. */
 .hud {
   position: fixed;
-  inset-block-end: 12px;
-  padding: 4px 8px;
-  background: rgba(7, 7, 10, 0.72);
-  backdrop-filter: blur(4px);
+  inset-block-end: 16px;
   z-index: 800;
   pointer-events: none;
   display: none;
   color: var(--fg-2);
-  direction: ltr;
+  font-size: 0.6rem;
+  line-height: 1.45;
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+  width: max-content;
 }
-@media (min-width: 1000px) and (hover: hover) {
+@media (min-width: 1180px) and (hover: hover) {
   .hud {
     display: block;
   }
 }
 .hud--start {
-  inset-inline-start: var(--gutter);
+  left: 6px;
+  transform: rotate(180deg);
 }
 .hud--end {
-  inset-inline-end: var(--gutter);
-  text-align: end;
+  right: 6px;
 }
 .hud b {
   color: var(--lime);
@@ -719,6 +720,7 @@ html.has-cursor textarea {
 /* Game mode: bugs live above everything */
 html.playing {
   cursor: crosshair;
+  overflow: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -741,3 +743,23 @@ html.playing {
     transform: none !important;
   }
 }
+
+/* calm-mode mirror: same rules as prefers-reduced-motion, switched by html[data-calm] */
+html.js[data-calm] [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+html[data-calm] .rise > span,
+html[data-calm] .fade-in {
+    animation: none;
+    transform: none;
+  }
+html[data-calm] .marquee__group {
+    animation: none;
+  }
+html[data-calm] [data-tilt],
+html[data-calm] [data-magnetic] {
+    transform: none !important;
+  }

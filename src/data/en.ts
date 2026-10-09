@@ -39,6 +39,9 @@ export const en: Content = {
     switchLanguageLabel: 'Persian version of this site',
     languageShort: 'FA',
     play: 'Play',
+    pauseMotion: 'Pause motion',
+    breadcrumb: 'Breadcrumb',
+    legend: 'Tag colour legend',
     stopPlay: 'Leave the game',
     email: 'Email',
     phone: 'Phone',
@@ -86,7 +89,7 @@ export const en: Content = {
     kicker: 'About',
     title: 'About AmirHossein, web developer',
     paragraphs: [
-      'I’m a web developer and website designer based in Tehran. Since December 2023 I’ve worked professionally on the interface of React applications, from structuring the page to wiring up the API and shipping the final build.',
+      'I’m a web developer and website designer based in Tehran. Since December 2023 I’ve worked professionally on the interface of React applications, from structuring the page to wiring up the API.',
       'I build responsive single-page applications with modular React architecture, predictable state management and reliable REST API integration. Part of my professional work covers national employment systems and the e-namad electronic trust platform.',
       'I’m flexible, I like a challenge, and I value strong connections with skilled people. Sharing knowledge and growing together as a team is what I look for. This site is built with Next.js and TypeScript as a live sample of my work.',
     ],
@@ -319,7 +322,7 @@ export const en: Content = {
       },
       {
         q: 'How long does it take to build a website?',
-        a: 'It depends on scope. A brochure page or landing page usually takes from a few days to two weeks; a multi-page site takes a few weeks. After reviewing your needs I give you an exact schedule.',
+        a: 'It depends on scope. As a rough first estimate (not a commitment), a brochure page or landing page takes from a few days to two weeks and a multi-page site takes a few weeks. After reviewing your needs I give you an exact schedule.',
       },
       {
         q: 'How much does a website cost?',
@@ -327,11 +330,11 @@ export const en: Content = {
       },
       {
         q: 'Why build the site with Next.js?',
-        a: 'Next.js generates pages ahead of time, either statically or on the server. The result is a site that loads faster and that search engines can read completely, which makes it a good fit when being found on Google matters.',
+        a: 'Next.js can generate pages at build time (static) or render them on the server when they are requested. Either way the complete HTML reaches the browser and search crawlers, so the site loads quickly and its content is read in full, which makes it a good fit when being found on Google matters.',
       },
       {
         q: 'Do you deliver SEO-ready sites, and can you guarantee the first Google result?',
-        a: 'I implement technical SEO fully: semantic structure, metadata, structured data, sitemap, speed and accessibility. But nobody can guarantee the first position on Google; rankings also depend on content quality, competition and the authority of the site.',
+        a: 'I build the technical SEO foundation into the code: semantic structure, metadata, structured data, sitemap, speed and accessibility. But nobody can guarantee the first position on Google; rankings also depend on content quality, competition and the authority of the site.',
       },
       {
         q: 'Do you also write backends?',
@@ -363,6 +366,7 @@ export const en: Content = {
       submit: 'Compose email',
       opening: 'Opening your email app…',
       subject: 'Website enquiry from',
+      limitHint: 'For longer messages, write to the email address directly.',
     },
   },
   footer: {
@@ -380,5 +384,6 @@ export const en: Content = {
     resultGood: 'Pro exterminator! Hyperdrive unlocked.',
     resultOk: 'Not bad. The bugs are still out there.',
     hint: 'Click the bugs. They run from your cursor.',
+    bugLabel: 'bug',
   },
 }

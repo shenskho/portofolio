@@ -41,7 +41,7 @@ export default function Footer({ content, altHref }: { content: Content; altHref
             </li>
           </ul>
 
-          <a href="#home" className={styles.top} data-magnetic>
+          <a href="#top" className={styles.top} data-magnetic>
             <span>{ui.backToTop}</span>
             <ArrowUpIcon width={18} height={18} />
           </a>

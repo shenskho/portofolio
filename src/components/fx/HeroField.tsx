@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { FX_EVENTS } from './Effects'
+import { CALM_EVENT, isCalm } from '@/lib/motion'
 
 /**
  * "Iron filings" field: a grid of short strokes that
@@ -22,7 +23,7 @@ export default function HeroField() {
     const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
 
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    let calm = isCalm()
     const coarse = window.matchMedia('(pointer: coarse)').matches
     const lowPower = (navigator.hardwareConcurrency ?? 8) <= 4 || coarse
     const accent = getComputedStyle(document.documentElement).getPropertyValue('--lime').trim() || '#c8ff3d'
@@ -160,7 +161,7 @@ export default function HeroField() {
       raf = requestAnimationFrame(loop)
     }
     const start = () => {
-      if (running || reduce || !visible || document.hidden) return
+      if (running || calm || !visible || document.hidden) return
       running = true
       last = 0
       raf = requestAnimationFrame(loop)
@@ -207,6 +208,13 @@ export default function HeroField() {
     })
     io.observe(host)
     const onVisibility = () => (document.hidden ? stop() : start())
+    const onCalm = () => {
+      calm = isCalm()
+      if (calm) {
+        stop()
+        draw(performance.now(), 0)
+      } else start()
+    }
 
     resize()
     start()
@@ -218,6 +226,7 @@ export default function HeroField() {
     document.addEventListener('mouseleave', onLeave)
     document.addEventListener('visibilitychange', onVisibility)
     window.addEventListener(FX_EVENTS.warp, onWarp)
+    window.addEventListener(CALM_EVENT, onCalm)
     return () => {
       stop()
       ro.disconnect()
@@ -229,6 +238,7 @@ export default function HeroField() {
       document.removeEventListener('mouseleave', onLeave)
       document.removeEventListener('visibilitychange', onVisibility)
       window.removeEventListener(FX_EVENTS.warp, onWarp)
+      window.removeEventListener(CALM_EVENT, onCalm)
     }
   }, [])
 

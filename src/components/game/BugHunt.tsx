@@ -36,9 +36,14 @@ export default function BugHunt({ g }: { g: Content['game'] }) {
   const [time, setTime] = useState(DURATION)
   const [best, setBest] = useState(0)
   const layerRef = useRef<HTMLDivElement>(null)
+  const opener = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
-    const open = () => setPhase((p) => (p === 'idle' ? 'intro' : p))
+    const open = () =>
+      setPhase((p) => {
+        if (p === 'idle') opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+        return p === 'idle' ? 'intro' : p
+      })
     window.addEventListener(FX_EVENTS.game, open)
     return () => window.removeEventListener(FX_EVENTS.game, open)
   }, [])
@@ -53,6 +58,14 @@ export default function BugHunt({ g }: { g: Content['game'] }) {
   useEffect(() => {
     document.documentElement.classList.toggle('playing', phase === 'playing')
     return () => document.documentElement.classList.remove('playing')
+  }, [phase])
+
+  // Hand focus back to whatever opened the game once it is closed.
+  useEffect(() => {
+    if (phase !== 'idle') return
+    const el = opener.current
+    opener.current = null
+    el?.focus({ preventScroll: true })
   }, [phase])
 
   useEffect(() => {
@@ -91,7 +104,7 @@ export default function BugHunt({ g }: { g: Content['game'] }) {
       el.tabIndex = -1
       el.className = styles.bug
       el.innerHTML = BUG_SVG
-      el.setAttribute('aria-label', 'bug')
+      el.setAttribute('aria-label', g.bugLabel)
       const bug: Bug = { el, x, y, a, v: 90, turn: 0 }
       el.addEventListener('pointerdown', (e) => {
         e.preventDefault()
@@ -203,7 +216,7 @@ export default function BugHunt({ g }: { g: Content['game'] }) {
       window.removeEventListener('pointermove', onMove)
       layer.replaceChildren()
     }
-  }, [phase, g.resultGood])
+  }, [phase, g.resultGood, g.bugLabel])
 
   const begin = () => {
     setScore(0)
@@ -214,7 +227,7 @@ export default function BugHunt({ g }: { g: Content['game'] }) {
   if (phase === 'idle') return null
 
   return (
-    <div className={styles.root} role="dialog" aria-label={g.title}>
+    <div className={styles.root} role="dialog" aria-modal="true" aria-label={g.title}>
       <div ref={layerRef} className={styles.layer} aria-hidden="true" />
 
       {phase === 'playing' ? (

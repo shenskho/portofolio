@@ -27,3 +27,12 @@ export const persian = localFont({
   weight: '100 900',
   display: 'swap',
 })
+
+/** Same file, but never preloaded: used on the English pages where only the language-switch label needs it. */
+export const persianLazy = localFont({
+  src: '../fonts/vazirmatn-arabic.woff2',
+  variable: '--ff-fa',
+  weight: '100 900',
+  display: 'swap',
+  preload: false,
+})

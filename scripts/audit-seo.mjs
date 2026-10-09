@@ -20,6 +20,8 @@ const walk = (dir) => {
 }
 walk(out)
 
+const hosts = new Set()
+const PLACEHOLDER = /(^|\.)(your-domain\.com|example\.(com|org|net)|[^.]+\.test|localhost)$/i
 let problems = 0
 const fail = (page, msg) => {
   problems++
@@ -51,8 +53,17 @@ for (const file of pages.sort()) {
   else if (desc.length < 70 || desc.length > 175) fail(rel, `description length ${desc.length}`)
   if (h1s !== 1) fail(rel, `expected exactly one <h1>, found ${h1s}`)
   if (!canonical) fail(rel, 'missing canonical')
+  else {
+    hosts.add(new URL(canonical).host)
+    if (PLACEHOLDER.test(new URL(canonical).hostname) && !process.env.ALLOW_PLACEHOLDER_SITE_URL) fail(rel, `canonical uses a placeholder domain (${canonical})`)
+  }
   for (const need of ['fa', 'en', 'x-default']) if (!hreflangs.includes(need)) fail(rel, `missing hreflang ${need}`)
-  if (!/property="og:image"/.test(html)) fail(rel, 'missing og:image')
+  const ogImage = get(/<meta property="og:image" content="([^"]*)"/)
+  if (!ogImage) fail(rel, 'missing og:image')
+  else {
+    const ogPath = new URL(ogImage).pathname
+    if (!fs.existsSync(path.join(out, ogPath))) fail(rel, `og:image file does not exist: ${ogPath}`)
+  }
   if (!/name="twitter:card"/.test(html)) fail(rel, 'missing twitter:card')
   if (/noindex/.test(html)) fail(rel, 'contains noindex')
   if (!lang) fail(rel, 'missing <html lang>')
@@ -87,5 +98,12 @@ const sitemap = fs.existsSync(path.join(out, 'sitemap.xml')) ? fs.readFileSync(p
 const urls = [...sitemap.matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => m[1])
 console.log(`\nsitemap: ${urls.length} URLs (expected ${pages.length})`)
 if (urls.length !== pages.length) problems++
+const canonicals = new Set(pages.map((f) => fs.readFileSync(f, 'utf8').match(/<link rel="canonical" href="([^"]*)"/)?.[1]).filter(Boolean))
+for (const u of urls) if (!canonicals.has(u)) { problems++; console.log(`✗ sitemap URL has no page with that canonical: ${u}`) }
+for (const c of canonicals) if (!urls.includes(c)) { problems++; console.log(`✗ page canonical missing from sitemap: ${c}`) }
+if (hosts.size > 1) { problems++; console.log(`✗ pages use more than one host: ${[...hosts].join(', ')}`) }
+const robots = fs.existsSync(path.join(out, 'robots.txt')) ? fs.readFileSync(path.join(out, 'robots.txt'), 'utf8') : ''
+const robotsHost = robots.match(/Sitemap: (https?:\/\/[^/\s]+)/)?.[1]
+if (robotsHost && ![...hosts].some((h) => robotsHost.endsWith(h))) { problems++; console.log(`✗ robots.txt sitemap host (${robotsHost}) differs from page hosts`) }
 console.log(problems ? `\n${problems} problem(s)` : '\nAll checks passed ✓')
 process.exit(problems ? 1 : 0)

@@ -1,18 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Logo from '@/components/ui/Logo'
 import { vars } from '@/lib/css'
 import { CloseIcon, MenuIcon, PlayIcon } from '@/components/ui/Icons'
 import { FX_EVENTS } from '@/components/fx/Effects'
+import MotionToggle from './MotionToggle'
 import styles from './Nav.module.css'
 
 interface Props {
   homeHref: string
   altHref: string
   isHome: boolean
-  name: string
   links: { label: string; href: string }[]
   ui: {
     primaryNavigation: string
@@ -23,17 +23,26 @@ interface Props {
     switchLanguageLabel: string
     languageShort: string
     play: string
+    home: string
+    pauseMotion: string
   }
   resumeUrl: string
 }
 
-export default function Nav({ homeHref, altHref, isHome, name, links, ui, resumeUrl }: Props) {
+const FOCUSABLE = 'a[href], button:not([disabled])'
+
+export default function Nav({ homeHref, altHref, isHome, links, ui, resumeUrl }: Props) {
   const [open, setOpen] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [active, setActive] = useState('')
+  const burgerRef = useRef<HTMLButtonElement>(null)
+  const sheetRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLElement>(null)
+  const wasOpen = useRef(false)
 
   const hrefFor = useCallback((hash: string) => (isHome ? hash : `${homeHref}${hash}`), [homeHref, isHome])
+  const langCode = ui.languageShort === 'EN' ? 'en' : 'fa'
 
   useEffect(() => {
     let last = window.scrollY
@@ -64,15 +73,52 @@ export default function Nav({ homeHref, altHref, isHome, name, links, ui, resume
     return () => io.disconnect()
   }, [isHome, links])
 
+  // The menu is a modal: lock scroll, make the page inert, contain Tab, close on Escape / when the layout becomes desktop.
   useEffect(() => {
-    document.documentElement.style.overflow = open ? 'hidden' : ''
     if (!open) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
+    const root = document.documentElement
+    const background = [document.getElementById('main-content'), document.querySelector('footer')]
+    root.style.overflow = 'hidden'
+    background.forEach((el) => el?.setAttribute('inert', ''))
+    sheetRef.current?.querySelector<HTMLElement>('a[href]')?.focus()
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false)
+        return
+      }
+      if (e.key !== 'Tab') return
+      const nodes = [
+        ...Array.from(headerRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []),
+        ...Array.from(sheetRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []),
+      ].filter((el) => el.getClientRects().length > 0)
+      if (!nodes.length) return
+      const first = nodes[0]
+      const last = nodes[nodes.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+    const desktop = window.matchMedia('(min-width: 1040px)')
+    const onResize = () => desktop.matches && setOpen(false)
     window.addEventListener('keydown', onKey)
+    desktop.addEventListener('change', onResize)
     return () => {
       window.removeEventListener('keydown', onKey)
-      document.documentElement.style.overflow = ''
+      desktop.removeEventListener('change', onResize)
+      root.style.overflow = ''
+      background.forEach((el) => el?.removeAttribute('inert'))
     }
+  }, [open])
+
+  // Give focus back to the burger when the menu closes (but not on first render).
+  useEffect(() => {
+    if (wasOpen.current && !open) burgerRef.current?.focus({ preventScroll: true })
+    wasOpen.current = open
   }, [open])
 
   const startGame = () => {
@@ -81,73 +127,86 @@ export default function Nav({ homeHref, altHref, isHome, name, links, ui, resume
   }
 
   return (
-    <header className={styles.header} data-hidden={hidden && !open ? '' : undefined} data-scrolled={scrolled ? '' : undefined}>
-      <div className={`${styles.bar} wrap`}>
-        <Link href={homeHref} className={styles.brand} aria-label={name} data-magnetic>
-          <Logo />
-          <span className={`${styles.brandName} latin`}>AmirHossein</span>
-        </Link>
+    <>
+      <header
+        ref={headerRef}
+        className={styles.header}
+        data-hidden={hidden && !open ? '' : undefined}
+        data-scrolled={scrolled ? '' : undefined}
+      >
+        <div className={`${styles.bar} wrap`}>
+          <Link href={homeHref} className={styles.brand} aria-label={`AmirHossein — ${ui.home}`} data-magnetic>
+            <Logo />
+            <span className={`${styles.brandName} latin`}>AmirHossein</span>
+          </Link>
 
-        <nav className={styles.nav} aria-label={ui.primaryNavigation}>
+          <nav className={styles.nav} aria-label={ui.primaryNavigation}>
+            <ul>
+              {links.map((l) => (
+                <li key={l.href}>
+                  <a href={hrefFor(l.href)} className={styles.link} data-active={active === l.href.slice(1) ? '' : undefined}>
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className={styles.tools}>
+            <MotionToggle label={ui.pauseMotion} />
+            <button type="button" className={styles.play} onClick={startGame} aria-haspopup="dialog" data-magnetic>
+              <PlayIcon width={14} height={14} />
+              <span>{ui.play}</span>
+            </button>
+            <a href={altHref} className={styles.lang} hrefLang={langCode} lang={langCode} aria-label={`${ui.switchLanguage} — ${ui.switchLanguageLabel}`}>
+              {ui.switchLanguage}
+            </a>
+            <a href={resumeUrl} className={styles.resume} target="_blank" rel="noopener" data-magnetic>
+              {ui.resume}
+            </a>
+            <button
+              ref={burgerRef}
+              type="button"
+              className={styles.burger}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              aria-label={open ? ui.closeMenu : ui.openMenu}
+              onClick={() => setOpen((v) => !v)}
+            >
+              {open ? <CloseIcon width={22} height={22} /> : <MenuIcon width={22} height={22} />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Outside <header> on purpose: a fixed element inside a header that has backdrop-filter is sized to the header, not the screen. */}
+      <div ref={sheetRef} id="mobile-menu" className={styles.sheet} data-open={open ? '' : undefined} aria-hidden={!open}>
+        <div className={styles.sheetInner}>
           <ul>
-            {links.map((l) => (
-              <li key={l.href}>
-                <a href={hrefFor(l.href)} className={styles.link} data-active={active === l.href.slice(1) ? '' : undefined}>
+            {links.map((l, i) => (
+              <li key={l.href} style={vars({ '--i': i })}>
+                <a href={hrefFor(l.href)} onClick={() => setOpen(false)} tabIndex={open ? 0 : -1}>
+                  <span className={`${styles.sheetIdx} latin`}>{String(i + 1).padStart(2, '0')}</span>
                   {l.label}
                 </a>
               </li>
             ))}
           </ul>
-        </nav>
-
-        <div className={styles.tools}>
-          <button type="button" className={styles.play} onClick={startGame} data-magnetic>
-            <PlayIcon width={14} height={14} />
-            <span>{ui.play}</span>
-          </button>
-          <a href={altHref} className={styles.lang} hrefLang={ui.languageShort === 'EN' ? 'en' : 'fa'} lang={ui.languageShort === 'EN' ? 'en' : 'fa'} aria-label={ui.switchLanguageLabel}>
-            {ui.switchLanguage}
-          </a>
-          <a href={resumeUrl} className={styles.resume} target="_blank" rel="noopener" data-magnetic>
-            {ui.resume}
-          </a>
-          <button
-            type="button"
-            className={styles.burger}
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            aria-label={open ? ui.closeMenu : ui.openMenu}
-            onClick={() => setOpen((v) => !v)}
-          >
-            {open ? <CloseIcon width={22} height={22} /> : <MenuIcon width={22} height={22} />}
-          </button>
+          <div className={styles.sheetFoot}>
+            <MotionToggle label={ui.pauseMotion} className={styles.motionSheet} />
+            <button type="button" className={styles.playSheet} onClick={startGame} tabIndex={open ? 0 : -1} aria-haspopup="dialog">
+              <PlayIcon width={14} height={14} />
+              <span>{ui.play}</span>
+            </button>
+            <a href={altHref} className={styles.langSheet} hrefLang={langCode} lang={langCode} tabIndex={open ? 0 : -1}>
+              {ui.switchLanguage}
+            </a>
+            <a href={resumeUrl} className={styles.resumeSheet} target="_blank" rel="noopener" tabIndex={open ? 0 : -1}>
+              {ui.resume}
+            </a>
+          </div>
         </div>
       </div>
-
-      <div id="mobile-menu" className={styles.sheet} data-open={open ? '' : undefined} aria-hidden={!open}>
-        <ul>
-          {links.map((l, i) => (
-            <li key={l.href} style={vars({ '--i': i })}>
-              <a href={hrefFor(l.href)} onClick={() => setOpen(false)} tabIndex={open ? 0 : -1}>
-                <span className={`${styles.sheetIdx} latin`}>{String(i + 1).padStart(2, '0')}</span>
-                {l.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-        <div className={styles.sheetFoot}>
-          <button type="button" className={styles.play} onClick={startGame} tabIndex={open ? 0 : -1}>
-            <PlayIcon width={14} height={14} />
-            <span>{ui.play}</span>
-          </button>
-          <a href={altHref} className={styles.lang} tabIndex={open ? 0 : -1}>
-            {ui.switchLanguage}
-          </a>
-          <a href={resumeUrl} className={styles.resume} target="_blank" rel="noopener" tabIndex={open ? 0 : -1}>
-            {ui.resume}
-          </a>
-        </div>
-      </div>
-    </header>
+    </>
   )
 }

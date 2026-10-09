@@ -60,6 +60,7 @@ export default function Cursor() {
         root.current?.setAttribute('data-on', '')
       }
       setState(e.target as Element)
+      kick()
     }
     const onDown = () => {
       const r = root.current
@@ -73,14 +74,18 @@ export default function Cursor() {
       }
     }
 
+    // The ring trails the pointer. The loop runs only while it is still catching up, so an idle page costs nothing.
     const loop = () => {
+      raf = 0
       rx += (x - rx) * 0.18
       ry += (y - ry) * 0.18
       if (dot.current) dot.current.style.transform = `translate3d(${x}px, ${y}px, 0)`
       if (ring.current) ring.current.style.transform = `translate3d(${rx}px, ${ry}px, 0)`
-      raf = requestAnimationFrame(loop)
+      if (Math.abs(x - rx) > 0.1 || Math.abs(y - ry) > 0.1) raf = requestAnimationFrame(loop)
     }
-    raf = requestAnimationFrame(loop)
+    const kick = () => {
+      if (!raf) raf = requestAnimationFrame(loop)
+    }
 
     window.addEventListener('pointermove', onMove, { passive: true })
     window.addEventListener('pointerdown', onDown)

@@ -88,13 +88,20 @@
   background: var(--k, var(--fg-2));
 }
 
-.boxHint,
-.shake {
-  display: none; /* only meaningful once the physics engine has taken over */
+/* The hint is only true once the physics engine has taken over; the shake button stays reachable for keyboard users. */
+.boxHint {
+  display: none;
 }
-.box[data-mode='physics'] .boxHint,
-.box[data-mode='physics'] .shake {
+.box[data-mode='physics'] .boxHint {
   display: block;
+}
+@media (prefers-reduced-motion: reduce) {
+  .shake {
+    display: none;
+  }
+}
+:global(html[data-calm]) .shake {
+  display: none;
 }
 .boxHint {
   position: absolute;
@@ -179,7 +186,7 @@
   border: 1px solid rgba(255, 90, 44, 0.5);
   border-radius: 999px;
   font-family: var(--font-code);
-  font-size: 0.64rem;
+  font-size: 0.72rem;
   font-style: normal;
   color: var(--flame);
 }

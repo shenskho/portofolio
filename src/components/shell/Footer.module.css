@@ -14,7 +14,7 @@
 /* Outline drawn as a filled glyph plus 1px shadows: unlike -webkit-text-stroke it never
    shows the overlapping contours inside variable-font letters. */
 .word {
-  font-size: clamp(3.4rem, 1rem + 15.5vw, 17rem);
+  font-size: min(13.6vw, 17rem);
   font-weight: 800;
   line-height: 0.82;
   letter-spacing: -0.06em;

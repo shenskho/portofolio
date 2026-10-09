@@ -29,7 +29,7 @@ export default function ServicePage({ locale, slug }: { locale: Locale; slug: Se
         </div>
         <div className={styles.veil} aria-hidden="true" />
         <div className="wrap">
-          <nav aria-label="breadcrumb" className={`${styles.crumbs} mono`}>
+          <nav aria-label={content.ui.breadcrumb} className={`${styles.crumbs} mono`}>
             <ol>
               <li>
                 <Link href={home}>{content.ui.breadcrumbHome}</Link>

@@ -9,11 +9,14 @@
 .header[data-scrolled] {
   background: rgba(7, 7, 10, 0.78);
   backdrop-filter: blur(14px) saturate(1.2);
-  -webkit-backdrop-filter: blur(14px) saturate(1.2);
   border-color: var(--line);
 }
 .header[data-hidden] {
   transform: translateY(-101%);
+}
+/* Keyboard users tabbing back into a hidden header must be able to see where focus is. */
+.header[data-hidden]:focus-within {
+  transform: none;
 }
 
 .bar {
@@ -84,7 +87,8 @@
 }
 .play,
 .lang,
-.resume {
+.resume,
+.motion {
   display: none;
   align-items: center;
   gap: 8px;
@@ -99,8 +103,23 @@
 @media (min-width: 640px) {
   .play,
   .lang,
-  .resume {
+  .resume,
+  .motion {
     display: inline-flex;
+  }
+}
+.motion {
+  color: var(--fg-1);
+}
+.motion:hover,
+.motion[aria-pressed='true'] {
+  border-color: var(--fg);
+  color: var(--fg);
+}
+@media (prefers-reduced-motion: reduce) {
+  /* The OS setting already stops everything; the switch would be redundant. */
+  .motion {
+    display: none;
   }
 }
 .play {
@@ -142,13 +161,13 @@
 .sheet {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 880; /* below the header bar (900) so the logo and the close button stay on top */
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 32px;
-  padding: calc(var(--nav-h) + 20px) var(--gutter) 40px;
+  padding: calc(var(--nav-h) + 20px) var(--gutter) max(40px, env(safe-area-inset-bottom));
   background: var(--bg);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   clip-path: circle(0% at calc(100% - 44px) 36px);
   visibility: hidden;
   transition: clip-path 0.7s var(--ease), visibility 0s 0.7s;
@@ -167,6 +186,21 @@
 @media (min-width: 1040px) {
   .sheet {
     display: none;
+  }
+}
+/* margin:auto centres the content when it fits and lets the sheet scroll when it does not (landscape phones). */
+.sheetInner {
+  display: grid;
+  gap: 32px;
+  margin-block: auto;
+}
+@media (max-height: 700px) {
+  .sheetInner {
+    gap: 18px;
+  }
+  .sheet li a {
+    padding-block: 6px;
+    font-size: clamp(1.3rem, 5.5vw, 2rem);
   }
 }
 .sheet li {
@@ -198,8 +232,31 @@
   flex-wrap: wrap;
   gap: 10px;
 }
-.sheetFoot .play,
-.sheetFoot .lang,
-.sheetFoot .resume {
+.playSheet,
+.langSheet,
+.resumeSheet,
+.motionSheet {
   display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding-inline: 16px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.playSheet {
+  color: var(--lime);
+  border-color: rgba(200, 255, 61, 0.35);
+}
+.resumeSheet {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+@media (min-width: 640px) {
+  .motionSheet {
+    display: none; /* the toolbar already shows it */
+  }
 }

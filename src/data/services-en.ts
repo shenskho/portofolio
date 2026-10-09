@@ -52,7 +52,7 @@ export const servicesEn: Record<ServiceSlug, ServicePageContent> = {
       },
       {
         q: 'Will the site be SEO-optimised when you hand it over?',
-        a: 'Technical SEO is built into every project: metadata, canonical URLs, sitemap, structured data and speed. Content and ranking for competitive keywords take ongoing work and time.',
+        a: 'The technical SEO foundation is built into projects where it is in scope: metadata, canonical URLs, sitemap, structured data and speed. Content and ranking for competitive keywords take ongoing work and time.',
       },
     ],
     ctaTitle: 'Let’s build your next website together',
@@ -68,7 +68,7 @@ export const servicesEn: Record<ServiceSlug, ServicePageContent> = {
       'Web developer in Tehran building web apps and dashboards with React and Redux, REST API integration and modular architecture, with national-scale project experience.',
     kicker: 'Web development',
     h1: 'A web developer for websites and web applications',
-    lead: 'From an admin panel to a system with thousands of users, I build the interface in React, keep application state predictable and connect it to your API. Having worked on national employment and government digital platforms means I know code has to be maintained for years.',
+    lead: 'From an admin panel to a large system, I build the interface in React, keep application state predictable and connect it to your API. Having worked on national employment and government digital platforms means I know code has to be maintained for years.',
     includes: [
       { title: 'Single-page applications', desc: 'SPA development with React, Hooks and client-side routing.' },
       { title: 'State management', desc: 'Redux and Redux-Thunk for asynchronous, traceable data flows.' },
@@ -116,7 +116,7 @@ export const servicesEn: Record<ServiceSlug, ServicePageContent> = {
       'Websites and apps with React, Next.js and TypeScript: static and server rendering, App Router, high speed and an SEO-friendly structure.',
     kicker: 'React & Next.js',
     h1: 'React & Next.js development for sites search engines can fully read',
-    lead: 'React is great for interactive interfaces, and Next.js makes it ready for the public web: pages are built ahead of time, load quickly and search engines read the full content. The site you’re on right now is built with Next.js, TypeScript and the App Router.',
+    lead: 'React is great for interactive interfaces, and Next.js makes it ready for the public web: pages are built ahead of time, load quickly and search engines read the full content. The site you’re on right now is built with Next.js, TypeScript and the App Router. My professional experience is mostly React applications; I use Next.js and TypeScript on projects like this site and I’m deepening them.',
     includes: [
       { title: 'Static & server rendering', desc: 'Choosing between SSG and SSR based on the content and your SEO needs.' },
       { title: 'App Router', desc: 'Modern routing, nested layouts and Server Components to cut JavaScript.' },
@@ -183,7 +183,7 @@ export const servicesEn: Record<ServiceSlug, ServicePageContent> = {
       { title: 'Technical audit', desc: 'Checking speed, structure, metadata and crawl errors with standard tools.' },
       { title: 'Prioritise', desc: 'A list of issues ranked by impact and cost to fix.' },
       { title: 'Implement', desc: 'Code fixes, structured data, sitemap and configuration.' },
-      { title: 'Register & monitor', desc: 'Search Console setup and a look at the results in the following weeks.' },
+      { title: 'Register & check', desc: 'Search Console setup and an initial indexing check.' },
     ],
     faq: [
       {
@@ -196,7 +196,7 @@ export const servicesEn: Record<ServiceSlug, ServicePageContent> = {
       },
       {
         q: 'Do you also set up Search Console?',
-        a: 'Yes. I handle ownership verification, sitemap submission and an initial indexing check as part of the project, and I explain how to read the reports.',
+        a: 'Yes. I handle ownership verification, sitemap submission and an initial indexing check as part of the project, and I explain how to read the reports. Monitoring in the following months can be agreed separately.',
       },
     ],
     ctaTitle: 'Want me to look at your site?',

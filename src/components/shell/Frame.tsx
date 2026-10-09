@@ -13,7 +13,6 @@ export default function Frame({ locale, path, children }: { locale: Locale; path
         homeHref={localePath(locale)}
         altHref={altHref}
         isHome={path === '/'}
-        name={content.site.name}
         links={content.nav}
         ui={content.ui}
         resumeUrl={content.site.resumeUrl}

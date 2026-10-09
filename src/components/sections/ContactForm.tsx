@@ -16,6 +16,7 @@ interface Props {
     submit: string
     opening: string
     subject: string
+    limitHint: string
   }
 }
 
@@ -51,7 +52,10 @@ export default function ContactForm({ email, labels }: Props) {
       </label>
       <label className={styles.field}>
         <span className="mono">{labels.message}</span>
-        <textarea name="message" required rows={5} placeholder={labels.messagePlaceholder} />
+        <textarea name="message" required rows={5} maxLength={800} placeholder={labels.messagePlaceholder} aria-describedby="message-limit" />
+        <small id="message-limit" className={styles.limit}>
+          {labels.limitHint}
+        </small>
       </label>
       <button type="submit" className="btn btn--solid" data-magnetic disabled={opening}>
         {opening ? labels.opening : labels.submit}

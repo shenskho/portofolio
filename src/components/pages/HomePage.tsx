@@ -24,7 +24,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
       <Marquee items={marqueeTech} duration={46} label={marqueeTech.join(', ')} />
       <About content={content} portraitSrc={portrait?.src ?? null} />
       <Services locale={locale} content={content} />
-      <Marquee items={[...marqueeTech].reverse()} reverse outline duration={58} />
+      <Marquee items={[...marqueeTech].reverse()} reverse outline duration={58} decorative />
       <Skills locale={locale} content={content} />
       <Projects content={content} />
       <Experience content={content} />

@@ -73,6 +73,9 @@ export interface Content {
     | 'switchLanguageLabel'
     | 'languageShort'
     | 'play'
+    | 'pauseMotion'
+    | 'breadcrumb'
+    | 'legend'
     | 'stopPlay'
     | 'email'
     | 'phone'
@@ -177,6 +180,7 @@ export interface Content {
       submit: string
       opening: string
       subject: string
+      limitHint: string
     }
   }
   footer: { copyright: string; built: string }
@@ -191,6 +195,7 @@ export interface Content {
     resultGood: string
     resultOk: string
     hint: string
+    bugLabel: string
   }
 }
 

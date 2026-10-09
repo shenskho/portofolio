@@ -251,3 +251,28 @@
 :global(:lang(fa)) .sampleArrow {
   transform: scaleX(-1);
 }
+
+@media (max-width: 560px) {
+  .sampleUrl {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse,
+  .bar,
+  .barHot,
+  .edgeShape,
+  .nodeHotFill {
+    animation: none;
+  }
+}
+
+/* calm-mode mirror: same rules as prefers-reduced-motion, switched by html[data-calm] */
+:global(html[data-calm]) .pulse,
+:global(html[data-calm]) .bar,
+:global(html[data-calm]) .barHot,
+:global(html[data-calm]) .edgeShape,
+:global(html[data-calm]) .nodeHotFill {
+    animation: none;
+  }

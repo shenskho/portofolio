@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { isCalm } from '@/lib/motion'
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v))
 
@@ -15,7 +16,7 @@ export function toast(message: string) {
   window.dispatchEvent(new CustomEvent(FX_EVENTS.toast, { detail: message }))
 }
 
-function countUp(el: HTMLElement) {
+function countUp(el: HTMLElement, delay = 0) {
   const to = parseFloat(el.dataset.count ?? '')
   if (Number.isNaN(to)) return
   const decimals = Number(el.dataset.decimals ?? 0)
@@ -25,16 +26,20 @@ function countUp(el: HTMLElement) {
     maximumFractionDigits: decimals,
     useGrouping: false,
   })
-  const start = performance.now()
+  // The server HTML carries the final number (good for crawlers); start from 0 only once we are going to animate.
+  el.textContent = nf.format(0) + suffix
   const dur = 1500
-  const tick = (now: number) => {
-    const t = clamp((now - start) / dur, 0, 1)
-    const eased = 1 - Math.pow(2, -10 * t)
-    el.textContent = nf.format(to * eased) + suffix
-    if (t < 1) requestAnimationFrame(tick)
-    else el.textContent = nf.format(to) + suffix
-  }
-  requestAnimationFrame(tick)
+  window.setTimeout(() => {
+    const start = performance.now()
+    const tick = (now: number) => {
+      const t = clamp((now - start) / dur, 0, 1)
+      const eased = 1 - Math.pow(2, -10 * t)
+      el.textContent = nf.format(to * eased) + suffix
+      if (t < 1) requestAnimationFrame(tick)
+      else el.textContent = nf.format(to) + suffix
+    }
+    requestAnimationFrame(tick)
+  }, delay)
 }
 
 /**
@@ -51,9 +56,13 @@ function countUp(el: HTMLElement) {
 export default function Effects() {
   const pathname = usePathname()
 
+  // Tell the stylesheet that scripts really run (it keeps a no-JS/failed-JS fail-safe for the reveal animation).
+  useEffect(() => {
+    document.documentElement.classList.add('fx')
+  }, [])
+
   // Re-scan the DOM whenever the route changes.
   useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const targets = document.querySelectorAll<HTMLElement>('[data-reveal]:not([data-in]), [data-count]:not([data-counted])')
 
     const io = new IntersectionObserver(
@@ -64,7 +73,7 @@ export default function Effects() {
           el.setAttribute('data-in', '')
           if (el.dataset.count !== undefined && !el.dataset.counted) {
             el.dataset.counted = '1'
-            if (!reduce) countUp(el)
+            if (!isCalm()) countUp(el, Number(el.dataset.countDelay) || 0)
           }
           io.unobserve(el)
         }
@@ -77,7 +86,6 @@ export default function Effects() {
 
   // Scroll-linked values: progress bar, --p on [data-scroll-p], marquee skew.
   useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const bar = document.querySelector<HTMLElement>('[data-scroll-bar]')
     let scrollEls: HTMLElement[] = []
     let marquees: HTMLElement[] = []
@@ -106,7 +114,7 @@ export default function Effects() {
         el.style.setProperty('--p', p.toFixed(4))
       }
 
-      if (!reduce) {
+      if (!isCalm()) {
         const v = y - lastY
         lastY = y
         skew += (clamp(v * -0.18, -9, 9) - skew) * 0.25
@@ -150,7 +158,6 @@ export default function Effects() {
   // Pointer-driven: spotlight, tilt, magnetic.
   useEffect(() => {
     const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (!fine) return
 
     let raf = 0
@@ -170,7 +177,7 @@ export default function Effects() {
         spot.style.setProperty('--sy', `${e.clientY - r.top}px`)
       }
 
-      if (reduce) return
+      if (isCalm()) return
 
       const tilt = target.closest<HTMLElement>('[data-tilt]')
       if (tilt) {

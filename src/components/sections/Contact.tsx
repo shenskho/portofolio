@@ -12,7 +12,7 @@ export default function Contact({ content, index = '07' }: { content: Content; i
   const { contact, site, ui } = content
   return (
     <section id="contact" className={`section ${styles.section}`} aria-labelledby="contact-title">
-      <Marquee items={Array(6).fill(contact.marquee)} outline duration={60} />
+      <Marquee items={Array(6).fill(contact.marquee)} outline duration={60} decorative />
 
       <div className={`wrap ${styles.wrap}`}>
         <div className={styles.layout}>
